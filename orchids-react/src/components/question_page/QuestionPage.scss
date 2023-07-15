@@ -1,0 +1,44 @@
+@media screen and (min-width: 1200px) {
+    #question-page {
+        // padding-bottom: 6rem;
+        padding-top: 2rem;
+
+        .question-card {
+            // width: 100%;
+            border-radius: .2rem;
+            box-shadow: 0 0 0.5rem 0.1rem #00000050;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            
+            .author {
+                font-size: .9rem;
+                font-weight: bold;
+                color: #0000008a;
+                display: flex;
+                flex-direction: row;
+                margin-bottom: .5rem;
+
+                .text{
+                    margin-top: .5rem;
+                }
+            }
+    
+            .content {
+                font-weight: bold;
+                font-size: 1.2rem;
+                cursor: pointer;
+                word-wrap: break-word;
+            }
+
+            .action{
+                text-align: right;
+
+                button{
+                    background-color: #c91f1fb6;
+                    border: #c91f1fb6;
+                    color: rgb(255, 255, 255);
+                }
+            }
+        }
+    }
+}

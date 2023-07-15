@@ -1,0 +1,142 @@
+@media screen and (min-width: 1200px) {
+    .wrap-home {
+        width: 100%;
+
+        .home-left {
+            padding-top: 5rem;
+            width: 22%;
+            /* background-color: rgba(243, 233, 233, 0.566); */
+            height: 100vh;
+            position: fixed;
+            overflow-Y: scroll;
+        }
+
+        .home-left::-webkit-scrollbar-thumb:vertical {
+            display: none;
+        }
+
+        .home-left:hover::-webkit-scrollbar-thumb:vertical {
+            display: block;
+        }
+
+        .home-center {
+            margin-left: 30%;
+            width: 38%;
+            /* background-color: green; */
+            padding-top: 5rem;
+            padding-bottom: 4rem;
+
+            .title, img{
+                cursor: pointer;
+            }
+        }
+
+        .home-right {
+            padding-top: 5rem;
+            width: 22%;
+            height: 100vh;
+            /* background-color: rgba(0, 0, 255, 0.579); */
+            position: fixed;
+            top: 0;
+            left: 78%;
+            overflow-Y: scroll;
+        }
+
+        .home-right::-webkit-scrollbar-thumb:vertical {
+            display: none;
+        }
+
+        .home-right:hover::-webkit-scrollbar-thumb:vertical {
+            display: block;
+        }
+
+        /* ! card info go to */
+        .go-to-page-btn {
+            width: 96%;
+            margin-left: 2%;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            padding: .5rem 0;
+            cursor: pointer;
+        }
+
+        .go-to-page-btn:hover {
+            background-color: #eaefeec4;
+            box-shadow: 0 0 0.5rem 0.1rem #0000001a;
+        }
+
+        /* ! card post */
+        .card-post {
+            width: 100%;
+            height: fit-content;
+            // background-color: #d5b0b0c4;
+            border-radius: .5rem;
+            box-shadow: 0 0 0.5rem 0.1rem #0000001a;
+            margin-bottom: 1rem;
+            padding: 1rem 2% .5rem 2%;
+            z-index: 0;
+
+            .title{
+                font-size: 1.2rem;
+                font-weight: 600;
+                margin-bottom: .5rem;
+                // height: 2.8rem;
+                overflow: hidden;
+            }
+
+            .author{
+                font-size: 1rem;
+                font-weight: 500;
+                margin-bottom: .5rem;
+                overflow: hidden;
+                color: #353535a8;
+            }
+
+            img {
+                width: 100%;
+                height: 10rem;
+                border-radius: 1rem;
+                object-fit: cover;
+            }
+
+        }
+
+        /* ! card mini */
+        .card-mini {
+            width: 96%;
+            margin-left: 2%;
+            height: 3rem;
+            background-color: #d5b0b0c4;
+            box-shadow: 0 0 0.5rem 0.1rem #0000001a;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .card-mini:hover {
+            background-color: #653131c4;
+            box-shadow: 0 0 0.5rem 0.1rem #0000001a;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+    }
+
+}
+
+@media screen and (max-width: 1199px) {}
+
+
+
+/* Show the scrollbar on hover */
+.wrap-home ::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Show the scrollbar during scrolling */
+.wrap-home ::-webkit-scrollbar-thumb:vertical {
+    background-color: #6464645c;
+    border-radius: 10rem;
+}

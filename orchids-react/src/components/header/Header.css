@@ -1,0 +1,139 @@
+@media screen and (min-width: 1200px) {
+
+    /* Header */
+    #navbar {
+        position: fixed;
+        z-index: 5;
+        background-color: white;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .left {
+        padding-left: 3%;
+        width: 40%;
+    }
+
+    .left .logo {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
+        width: 9.75em;
+        height: 3rem;
+        /* transition: width 0.5s, height 0.5s; */
+        border-radius: 0.5rem;
+        box-shadow: 0px 1px 6px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    /* .left .logo:hover {
+        width: 16rem;
+        height: 8rem;
+    } */
+
+    .right {
+        display: block;
+        width: 60.5%;
+        text-align: right;
+        display: flex;
+        text-decoration: row;
+        font-size: medium;
+        font-weight: bold;
+        justify-content: space-between;
+        padding-top: 1.5rem;
+    }
+
+    .nvb-item {
+        color: #000000;
+        text-decoration: none;
+        padding: 1rem 2rem;
+        margin-top: -2rem;
+        border-radius: 1rem;
+    }
+
+    .nvb-item:hover {
+        background-color: #e6e6e6cf;
+    }
+
+    .search input {
+        width: 13rem;
+        height: 2rem;
+        border-radius: 1rem;
+        padding-left: 1rem;
+        margin-top: -5rem;
+        border: none;
+        background-color: #ebeef1;
+    }
+
+    .nvb-notification {
+        border-radius: 50%;
+        margin-top: -1.5rem;
+        margin-right: 6rem;
+        padding: 0.8rem;
+        color: #000000;
+    }
+
+    .nvb-avatar {
+        position: absolute;
+        top: .7rem;
+        right: 2.5rem;
+    }
+
+    @keyframes showMenu {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0px);
+        }
+    }
+}
+
+@media screen and (max-width: 1199px) {
+
+    /* Header */
+    #navbar {
+        position: fixed;
+        background-color: white;
+        width: 100%;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+        z-index: 5;
+    }
+
+    .logo {
+        height: 3.3rem;
+    }
+
+    .nvb-alert {
+        position: absolute;
+        top: 0.35rem;
+        right: 1rem;
+        border-radius: 50%;
+        padding: 0.8rem;
+        color: #000000;
+        font-size: 1.2rem;
+    }
+
+    .footer-header-mobile {
+        position: fixed;
+        bottom: 0;
+        height: 9vh;
+        background-color: #ffffff;
+        width: 100%;
+        z-index: 5;
+        transition: 0.5s;
+        box-shadow: 0px 0px 0px 0.5px rgba(0, 0, 0, 0.25);
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .nvb-item {
+        color: #000000;
+        text-decoration: none;
+        margin-top: 1rem;
+        font-size: 1.2rem;
+    }
+}

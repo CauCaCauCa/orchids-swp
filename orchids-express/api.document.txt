@@ -1,0 +1,19 @@
+* Login api
+uri: domain/login
+req:
+    method: 'post'
+    headers: 
+        {
+            'Content-Type': 'application/json'
+        }
+    body:
+        {
+            token: <your_token>
+        }
+res:
+    body:
+        {
+            'msg': <message>
+        }
+
+*Get personal info api

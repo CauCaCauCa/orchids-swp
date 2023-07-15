@@ -1,0 +1,85 @@
+@media screen and (min-width: 1200px) {
+
+    /* Create Post */
+    #create-post-page {
+        position: absolute;
+        top: 8rem;
+        left: 10%;
+        width: 70%;
+        padding: 5%;
+        border-radius: 20px;
+    }
+
+    #create-post-page {
+        position: relative;
+        box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.25);
+
+    }
+
+    #create-post-page input, select {
+        margin-left: 1rem;
+        margin-top: 1rem;
+    }
+
+    #create-post-page input[type="text"] {
+        height: 1.5rem;
+        width: 50rem;
+        font-size: large;
+        font-weight: bold;
+        border: none;
+        outline: none;
+        background-color: #a4646400;
+    }
+
+    #create-post-page .btn {
+        margin-left: 90%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: .5rem 1rem;
+    }
+
+    .update{
+        display: none;
+    }
+
+}
+
+@media screen and (max-width: 1199px) {
+    #create-post-page-page {
+        position: absolute;
+        top: 10rem;
+        left: 10%;
+        width: 70%;
+        padding: 5%;
+    }
+
+    #create-post-page {
+        position: relative;
+        background-color: rgba(226, 222, 222, 0.599);
+        box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.25);
+
+    }
+
+    #create-post-page input, select {
+        margin-left: 1rem;
+        margin-top: 1rem;
+    }
+
+    #create-post-page input[type="text"] {
+        height: 1.5rem;
+        width: 50rem;
+        font-size: large;
+        font-weight: bold;
+        border: none;
+        outline: none;
+        background-color: #a4646400;
+    }
+
+    #create-post-page .btn {
+        margin-left: 80%;
+        margin-top: 0.1rem;
+        margin-bottom: 0.1rem;
+        padding: .1rem 0.1rem;
+    }
+
+}
