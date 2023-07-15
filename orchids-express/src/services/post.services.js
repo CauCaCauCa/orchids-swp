@@ -5,14 +5,14 @@ const { ObjectId } = require('mongodb');
 // Get create post
 async function CreatePost(post, emailCreator) {
     var postFormat = Post(post, emailCreator); // Format post
-    const {collection ,close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     var result = await collection.insertOne(postFormat);
     close();
     return result;
 }
 // Update post
 async function UpdatePost(post, emailCreator) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(post.postId) };
     const update = { $set: { ...post } };
     var result = await collection.updateOne(query, update);
@@ -21,14 +21,14 @@ async function UpdatePost(post, emailCreator) {
 }
 // Delete post
 async function DeletePost(postId, emailCreator) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     var result = await collection.deleteOne({ _id: new ObjectId(postId), emailCreator: emailCreator });
     close();
     return result;
 }
 // Get list post by time
 async function GetListPostByTime(timestamp) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = timestamp ? { 'date': { $lt: parseInt(timestamp) } } : {};
     var result = await collection.find(query).sort({ 'date': -1 }).limit(5).toArray();
     close();
@@ -36,7 +36,7 @@ async function GetListPostByTime(timestamp) {
 }
 // get list post by time and emailCreator
 async function GetListPostByTimeAndEmailCreator(timestamp, emailCreator) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = timestamp ? { 'date': { $lt: parseInt(timestamp) }, 'emailCreator': emailCreator } : { 'emailCreator': emailCreator };
     var result = await collection.find(query).sort({ 'date': -1 }).limit(5).toArray();
     close();
@@ -44,14 +44,18 @@ async function GetListPostByTimeAndEmailCreator(timestamp, emailCreator) {
 }
 // get Post info for load Page Post.
 async function GetPostInfoForLoadPage(postId) {
-    const {collection, close} = await connect('orchids-1', 'post');
-    var result = await collection.findOne({ _id: new ObjectId(postId) });
-    close();
-    return result;
+    try {
+        const { collection, close } = await connect('orchids-1', 'post');
+        var result = await collection.findOne({ _id: new ObjectId(postId) });
+        close();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
 }
 // like post
 async function LikePost(postId, email) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(postId) };
     const update = { $addToSet: { ListEmailLiked: email } };
     var result = await collection.updateOne(query, update);
@@ -60,7 +64,7 @@ async function LikePost(postId, email) {
 }
 // unlike post
 async function UnlikePost(postId, email) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(postId) };
     const update = { $pull: { ListEmailLiked: email } };
     var result = await collection.updateOne(query, update);
@@ -69,7 +73,7 @@ async function UnlikePost(postId, email) {
 }
 // comment post
 async function CommentPost(postId, email, comment) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     var cmtFormat = Comment(comment, email);
     const query = { _id: new ObjectId(postId) };
     const update = { $addToSet: { ListComment: { ...cmtFormat } } };
@@ -80,7 +84,7 @@ async function CommentPost(postId, email, comment) {
 
 // TODO: delete comment post
 async function DeleteCommentPost(postId, email, date) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(postId) };
     var id = date + email;
     const update = { $pull: { ListComment: { email: email, date: date } } };
@@ -91,7 +95,7 @@ async function DeleteCommentPost(postId, email, date) {
 
 // TODO: like comment post
 async function LikeCommentPost(postId, email, date, EmailLiker) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(postId), 'ListComment.email': email, 'ListComment.date': date };
     const update = { $addToSet: { 'ListComment.$.ListEmailLiked': EmailLiker } };
     var result = await collection.updateOne(query, update);
@@ -101,7 +105,7 @@ async function LikeCommentPost(postId, email, date, EmailLiker) {
 
 // TODO: unlike comment post
 async function UnlikeCommentPost(postId, email, date, EmailLiker) {
-    const {collection, close} = await connect('orchids-1', 'post');
+    const { collection, close } = await connect('orchids-1', 'post');
     const query = { _id: new ObjectId(postId), 'ListComment.email': email, 'ListComment.date': date };
     const update = { $pull: { 'ListComment.$.ListEmailLiked': EmailLiker } };
     var result = await collection.updateOne(query, update);

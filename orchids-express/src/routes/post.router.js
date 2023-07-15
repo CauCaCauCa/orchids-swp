@@ -87,18 +87,20 @@ router.get('/get-list-by-time-and-email-creator', async (req, res) => {
 router.get('/get-post-info', async (req, res) => {
     var postId = req.query.postId;
     var result = await PostServices.GetPostInfoForLoadPage(postId);
-    if (result.isTeam == false) {
-        // user username by email
-        var user = await AccountServices.getAccountInfoByEmail(result.emailCreator, { username: 1, avatar: 1 });
-        result.username = user.username;
-        result.avatar = user.avatar;
-        res.send(result);
-    } else {
-        // team username by email
-        var team = await TeamServices.getTeam(result.emailCreator, { teamname: 1, avatar: 1 });
-        result.username = team.teamname;
-        result.avatar = team.avatar;
-        res.send(result);
+    if (result) {
+        if (result.isTeam == false) {
+            // user username by email
+            var user = await AccountServices.getAccountInfoByEmail(result.emailCreator, { username: 1, avatar: 1 });
+            result.username = user.username;
+            result.avatar = user.avatar;
+            res.send(result);
+        } else {
+            // team username by email
+            var team = await TeamServices.getTeam(result.emailCreator, { teamname: 1, avatar: 1 });
+            result.username = team.teamname;
+            result.avatar = team.avatar;
+            res.send(result);
+        }
     }
 });
 // TODO: like post

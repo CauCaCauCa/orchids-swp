@@ -10,18 +10,19 @@ app.listen(port, () => {
 
 // run exe file get Donate Timo automatically
 
-// const { exec } = require('child_process');
-// const path = require('path');
+const { exec } = require('child_process');
+const path = require('path');
 
-// const projectDirectory = process.cwd();
-// const exePath = path.join(projectDirectory, 'getUpdateTimo', 'getUpdateTimo.exe');
+const projectDirectory = process.cwd();
+const exePath = path.join(projectDirectory, 'output/getUpdateTimo', 'getUpdateTimo.exe');
 
-// exec(`start ${exePath}`, (error, stdout, stderr) => {
-//   if (error) {
-//     throw new Error(error);
-//   }
+exec(`start ${exePath}`, (error, stdout, stderr) => {
+  if (error) {
+    throw new Error(error);
+  }
   
-//   console.log('File executed successfully.');
-// });
+  console.log('File executed successfully.');
+});
+
 
 
