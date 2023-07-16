@@ -43,6 +43,20 @@ export async function FetchTeamsByPage(page, limit, filter, projection) {
     })
 }
 
+export async function FetchQuestionsByPage(page, limit, filter, projection) {
+    return fetchAPI({
+        method: 'POST',
+        uri: `/admin/questions/page-fetch?page=${page}&limit=${limit}`,
+        Headers: {
+            'authorization': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        }, body: JSON.stringify({
+            filter,
+            projection
+        })
+    })
+}
+
 // #endregion
 
 export async function GetAccountsStats() {
@@ -102,6 +116,26 @@ export async function GetOnePost(id) {
         uri: `/admin/post/${id}`,
         Headers: {
             'authorization': localStorage.getItem('token'),
+        }
+    })
+}
+
+export async function GetOneQuestion(id) {
+    return fetchAPI({
+        method: 'GET',
+        uri: `/admin/question/${id}`,
+        Headers: {
+            'authorization': localStorage.getItem('token')
+        }
+    })
+}
+
+export async function GetQuestionsStats() {
+    return fetchAPI({
+        method: 'GET',
+        uri: `/admin/questions/stats`,
+        Headers: {
+            'authorization': localStorage.getItem("token")
         }
     })
 }

@@ -11,6 +11,7 @@ import QuestionPage from '../question_page/QuestionPage';
 import { GetListQuestionByTimeDefault } from '../../api/questionAPI';
 import { getAllTeams } from '../../api/teamAPI';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
+import IconImage from '../common/IconImage';
 
 
 

@@ -6,33 +6,23 @@ import useFetch from "../../hooks/useFetch";
 export const PostContext = createContext({});
 
 export default function PostContextProvider({ children }) {
-  const {
-    list: posts,
-    setList: setPosts,
-    changePage,
-    total: totalPosts,
-    isLoading,
-  } = usePage(FetchPostsByPage);
 
-  const {
-    data: postStats,
-    refresh: refreshPostStats,
-    isLoading: isLoadingPostStats
-} = useFetch(GetPostsStats);
+  const AllPosts = usePage(FetchPostsByPage);
+  const PostStats = useFetch(GetPostsStats);
 
   return (
     <PostContext.Provider
       value={{
         data: {
-          posts,
-          changePage,
-          totalPosts,
-          isLoading,
+          posts: AllPosts.list,
+          changePage: AllPosts.changePage,
+          totalPosts: AllPosts.total,
+          isLoading: AllPosts.isLoading,
         },
         stats: {
-          postStats,
-          refreshPostStats,
-          isLoadingPostStats
+          postStats: PostStats.data,
+          refreshPostStats: PostStats.refresh,
+          isLoadingPostStats: PostStats.isLoading
         }
       }}
     >

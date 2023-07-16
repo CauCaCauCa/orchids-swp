@@ -9,10 +9,10 @@ export default function Accounts() {
         <Box id="accounts" width="100%">
             <h1>Account Management</h1>
             <Grid container spacing={2} width="100%">
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12} md={8}>
                     <AllAccountsCard />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={4}>
                     <AccountStatsCard />
                 </Grid>
                 <Grid item xs={12} md={4}>

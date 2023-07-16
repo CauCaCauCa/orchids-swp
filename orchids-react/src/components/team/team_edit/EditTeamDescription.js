@@ -1,26 +1,22 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { TextField, Typography, Button, Box, Paper, Dialog, DialogActions } from '@mui/material';
-import { UpdateTeam } from '../../../api/teamAPI';
-import { EditTeamContext } from './EditTeamContext';
 import { FileUploader } from "react-drag-drop-files";
 import EditImageOverlay from '../../common/EditImageOverlay';
-import { NotificationContext } from '../../../context/NotificationContext';
+import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
 
-export default function EditTeamDescription({ team }) {
+export default function EditTeamDescription() {
+    const { team, teamDetails } = useContext(TeamHomepageContext);
 
-    const { showSuccess, showError } = useContext(NotificationContext);
-
-    const [open, setOpen] = React.useState(false); // for file uploader
-    const [fileUsing, setFileUsing] = React.useState(null) // can be 'avatar' or 'bground'
+    const [open, setOpen] = useState(false); // for file uploader
+    const [fileUsing, setFileUsing] = useState(null) // can be 'avatar' or 'bground'
 
     // changeable team information
-    const [name, setName] = React.useState(team.teamname);
-    const [description, setDescription] = React.useState(team.description);
-    const [bground, setBground] = React.useState(team.bground)
-    const [avatar, setAvatar] = React.useState(team.avatar)
+    const [name, setName] = useState(team.teamname);
+    const [description, setDescription] = useState(team.description);
+    const [bground, setBground] = useState(team.bground)
+    const [avatar, setAvatar] = useState(team.avatar)
 
     // original team information
-    const { setTeam } = React.useContext(EditTeamContext);
 
     var handleFileChange = (files) => {
         const reader = new FileReader();
@@ -43,23 +39,7 @@ export default function EditTeamDescription({ team }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const update = async () => {
-            const response = await UpdateTeam(team.email, name, description, bground, avatar);
-
-            if (response) {
-                team.teamname = name;
-                team.description = description;
-                team.bground = bground;
-                team.avatar = avatar;
-
-                setTeam(team);
-                showSuccess('Cập nhật thành công!');
-            } else {
-                showError('Cập nhật thất bại');
-            }
-        }
-        update()
+        teamDetails.update(name, description, bground, avatar);
     }
 
     return (
