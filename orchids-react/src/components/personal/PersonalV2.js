@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 // import { GetPersonalInfo, UpdateUsername, UpdateBackground, } from '../FunctionAPI.js';
-import { GetPersonalInfoToken, UpdateBackground, UpdateUsername } from '../../api/accountAPI';
+import { GetPersonalInfo, GetPersonalInfoToken, UpdateBackground, UpdateUsername } from '../../api/accountAPI';
 import { Box, Button, Modal, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,10 +12,11 @@ import { GetListPostByTimeAndEmailCreator, GetListPostByTimeAndEmailCreatorDefau
 import WaitPost from '../home/WaitPost';
 import PopupPost from '../home/PopupPost';
 import { NotificationContext } from '../../context/NotificationContext';
+import { getListTeamInfoByEmails } from '../../api/teamAPI';
 
 export default function PersonalV2({ selectPage }) {
     const navigate = useNavigate();
-    const {showSuccess, showError, showInfo} = useContext(NotificationContext);
+    const { showSuccess, showError, showInfo } = useContext(NotificationContext);
 
 
     function CardPost(post, key) {
@@ -50,6 +51,7 @@ export default function PersonalV2({ selectPage }) {
         const [display, setDisplay] = React.useState(`${selectPage ? selectPage : 'personalpage'}`);
         const [dataCur, setDataCur] = React.useState({});
         const [listPost, setListPost] = useState([]);
+        const [listTeam, setListTeam] = useState([]);
 
 
         useEffect(() => {
@@ -83,7 +85,19 @@ export default function PersonalV2({ selectPage }) {
             GetListPostByTimeAndEmailCreatorDefault(localStorage.getItem('email')).then(res => {
                 setListPost(res);
             })
+            GetPersonalInfo(localStorage.getItem('username')).then(res => {
+                setListTeamData(res);
+            })
         }, [])
+
+        // set data
+        function setListTeamData(data) {
+            var list = [...data.ListEmailTeamOwner, ...data.ListEmailTeamAttend];
+            getListTeamInfoByEmails(list).then(res => {
+                setListTeam(res);
+            }
+            )
+        }
 
         function PersonalPage() {
             const [isPostLoad, setIsPostLoad] = useState(true);
@@ -213,17 +227,24 @@ export default function PersonalV2({ selectPage }) {
                                 <hr />
                                 <h3>Nhóm</h3>
                                 <div className='list-team'>
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-                                    <img src='./img/bg.jpg' />
-
+                                    {
+                                        listTeam.map((team, index) => (
+                                            <div className='team' key={index}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                }}
+                                                onClick={() => {
+                                                    navigate(`/teams/${team.email}`)
+                                                }}
+                                            >
+                                                <img src={team.avatar} alt='#' />
+                                                <div className='name'>{team.teamname}</div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </div>
                         </div>
