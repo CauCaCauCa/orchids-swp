@@ -203,11 +203,22 @@ async function getMemberSpecific(teamEmail, memberEmail) {
 }
 
 async function createTeamPost(title, content, bground, teamEmail) {
-    const { collection, close } = await getPostsCollection();
+    const { collection: teamCollection, close: clostTeam } = await getTeamsCollection();
+    const { collection: postCollection, close: closePost } = await getPostsCollection();
+    
     const postToAdd = Post({ title, content, bground, isTeam: true }, teamEmail); // create new post object
-    const result = await collection.insertOne(postToAdd); // add post to database
-    close();
-    return result
+    const result = await postCollection.insertOne(postToAdd); // add post to database
+    const response = await postCollection.find({ _id: result.insertedId }).toArray(); // fetch post from database
+
+    await teamCollection.updateOne(
+        { email: teamEmail },
+        { $inc: { NumberPost: 1 } }
+    );
+
+    clostTeam();
+    closePost();
+
+    return response[0]
 }
 
 async function getTeamPostsByTimestamp(teamEmail, timestamp) {

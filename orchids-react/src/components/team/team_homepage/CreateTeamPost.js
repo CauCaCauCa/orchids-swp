@@ -6,12 +6,13 @@ import IconImage from '../../common/IconImage';
 import { FileUploader } from 'react-drag-drop-files';
 import { createTeamPost } from '../../../api/teamAPI';
 import { NotificationContext } from '../../../context/NotificationContext';
+import { TeamPostContext } from '../../../context/team/TeamPostsContextProvider';
 
 export default function CreateTeamPost({ open, setOpen, teamEmail }) {
 
     // used solely to load the quill. without this, quill loads on close only
     const [isDialogOpen, setIsDialogOpen] = useState(open);
-    const { showSuccess, showError } = useContext(NotificationContext);
+    const { addPost } = useContext(TeamPostContext);
 
     const editorRef = useRef(null);
     const quillRef = useRef(null);
@@ -32,17 +33,8 @@ export default function CreateTeamPost({ open, setOpen, teamEmail }) {
     }
 
     const handleSubmit = () => {
-        const createTeamPostInDB = async () => {
-            const response = await createTeamPost(teamEmail, title, content, previewUrl);
-            if(response) {
-                showSuccess("Đăng bài thành công")
-                setOpen(false);
-            } else {
-                showError("Đăng bài thất bại")
-            }
-        }
-
-        createTeamPostInDB();
+        addPost(title, content, previewUrl);
+        setOpen(false);
     }
 
     const handleFileChange = (files) => {

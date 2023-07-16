@@ -10,13 +10,13 @@ import CreatePostPage from './components/create_post/CreatePost';
 import PostPage from './components/post_page/PostPage';
 import Team from './components/team/team_homepage/Team';
 import NotFound from './components/error/404';
-import EditTeamProvider from './components/team/team_edit/EditTeamContext';
 import TeamDashboard from './components/team/team_dashboard/TeamDashboard';
 import QuestionPage from './components/question_page/QuestionPage';
 import UpdatePostPage from './components/update_post/UpdatePost';
 import SearchPage from './components/search_page/SearchPage';
 import Dashboard from './pages/admin/Dashboard';
 import ViewPersonal from './components/view_personal_page/ViewPerson';
+import TeamHomepageContextProvider from './context/team/TeamHomepageContext';
 import PopupShowCard from './components/question_page/PopupShowCard';
 import QuestionLoadPage from './components/question_page/QuestionLoadPage';
 
@@ -37,7 +37,7 @@ function App() {
         <Route path="/personal/info" element={isLogin ? <PersonalV2 selectPage={'infomation'} /> : <Login setIsLogin={setIsLogin} />} />
         <Route path="/personal/teams" element={isLogin ? <PersonalV2 selectPage={'manager-team'} /> : <Login setIsLogin={setIsLogin} />} />
 
-        <Route path="/teams/:id" element={<EditTeamProvider><Team /></EditTeamProvider>} />
+        <Route path="/teams/:id" element={<TeamHomepageContextProvider><Team /></TeamHomepageContextProvider>} />
 
 
         <Route path="/create-post" element={isLogin ? <CreatePostPage /> : <Login setIsLogin={setIsLogin} />} />

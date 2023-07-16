@@ -7,35 +7,14 @@ import {
 import usePage from '../../hooks/usePage';
 import useFetch from '../../hooks/useFetch';
 
-const { createContext, useState } = require('react');
+const { createContext } = require('react');
 
 export const AccountContext = createContext({});
 
 export default function AccountContextProvider({ children }) {
-    const [filterString, setFilterString] = useState();
-
-    const {
-        list: accounts,
-        setList: setAccounts,
-        changePage,
-        total: totalAccounts,
-        isLoading
-    } = usePage(FetchAccountsByPage);
-
-    const {
-        list: admins,
-        setList: setAdmins,
-        changePage: adminsChangePage,
-        total: totalAdmins,
-        isLoading: adminsIsLoading,
-        refresh: refreshAdmins
-    } = usePage(FetchAccountsByPage, { role: 'AD' });
-
-    const {
-        data: accountStats,
-        refresh: refreshAccountStats,
-        isLoading: isLoadingAccountStats
-    } = useFetch(GetAccountsStats);
+    const AllAccounts = usePage(FetchAccountsByPage);
+    const Admins = usePage(FetchAccountsByPage, { role: 'AD' });
+    const AccountStats = useFetch(GetAccountsStats);
 
     const toggleDeactivateAccount = async (email) => {
         const save = async () => {
@@ -47,7 +26,7 @@ export default function AccountContextProvider({ children }) {
             }
         };
 
-        setAccounts((list) =>
+        AllAccounts.setList((list) =>
             list.map((account) =>
                 account.email === email
                     ? { ...account, status: !account.status }
@@ -56,13 +35,13 @@ export default function AccountContextProvider({ children }) {
         );
 
         await save();
-        refreshAccountStats();
-        refreshAdmins();
+        AccountStats.refresh();
+        Admins.refresh();
     };
 
     const makeAdmin = async (email) => {
         const save = async () => {
-            const response = await ToggleAdmin(email, "AD");
+            const response = await ToggleAdmin(email, 'AD');
             if (response) {
                 console.log(response);
                 return true;
@@ -71,7 +50,7 @@ export default function AccountContextProvider({ children }) {
             }
         };
 
-        setAccounts((list) =>
+        AllAccounts.setList((list) =>
             list.map((account) =>
                 account.email === email ? { ...account, role: 'AD' } : account
             )
@@ -79,13 +58,13 @@ export default function AccountContextProvider({ children }) {
 
         await save();
 
-        refreshAdmins();
-        refreshAccountStats();
+        Admins.refresh();
+        AccountStats.refresh();
     };
 
     const removeAdmin = async (email) => {
         const save = async () => {
-            const response = await ToggleAdmin(email, "US");
+            const response = await ToggleAdmin(email, 'US');
             if (response) {
                 return true;
             } else {
@@ -93,42 +72,40 @@ export default function AccountContextProvider({ children }) {
             }
         };
 
-        setAccounts((list) =>
+        AllAccounts.setList((list) =>
             list.map((account) =>
                 account.email === email ? { ...account, role: 'US' } : account
             )
         );
 
         await save();
-        refreshAdmins();
-        refreshAccountStats();
+        Admins.refresh();
+        AccountStats.refresh();
     };
 
     return (
         <AccountContext.Provider
             value={{
                 data: {
-                    accounts,
-                    changePage,
-                    isLoading,
-                    totalAccounts,
-                    currentFilter: filterString
+                    accounts: AllAccounts.list,
+                    changePage: AllAccounts.changePage,
+                    isLoading: AllAccounts.isLoading,
+                    totalAccounts: AllAccounts.total
                 },
                 functions: {
                     toggleDeactivateAccount,
-                    setFilter: setFilterString,
                     makeAdmin,
                     removeAdmin
                 },
                 stats: {
-                    accountStats,
-                    isLoadingAccountStats
+                    accountStats: AccountStats.data,
+                    isLoadingAccountStats: AccountStats.isLoading
                 },
                 admins: {
-                    admins,
-                    adminsChangePage,
-                    adminsIsLoading,
-                    totalAdmins
+                    admins: Admins.list,
+                    adminsChangePage: Admins.changePage,
+                    adminsIsLoading: Admins.isLoading,
+                    totalAdmins: Admins.total
                 }
             }}
         >

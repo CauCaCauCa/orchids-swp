@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './Header.css'
-import { Avatar, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Avatar, IconButton, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
 import NotificationPopup from '../notification/NotificationPopup';
+import SearchIcon from '@mui/icons-material/Search';
+import useSearch from '../../hooks/useSearch';
 
 export default function Header({ isLogin, setIsLogin }) {
 
@@ -57,8 +59,8 @@ export default function Header({ isLogin, setIsLogin }) {
     }
 
     function Desktop() {
+        const [getComponent, handleOpen] = useSearch();
         const [curPage, setCurPage] = useState('home');
-        const [contentSearch, setContentSearch] = useState('');
 
         useEffect(() => {
             turnPage();
@@ -142,13 +144,13 @@ export default function Header({ isLogin, setIsLogin }) {
                         </Link>
                     </div>
 
-                    <form onSubmit={() => { navigate('search-page?content=' + contentSearch) }} className='search'>
-                        <input type='text' name='content' placeholder='Tìm kiếm' onChange={(e) => { setContentSearch(e.target.value) }} />
+                    <form className='search'>
+                        <IconButton onClick={handleOpen}>
+                            <SearchIcon />
+                        </IconButton>
                         <NotificationPopup>
-                            <i className="fa-solid fa-bell fa-xl">
-                            </i>
+                            <i className="fa-solid fa-bell fa-xl"></i>
                         </NotificationPopup>
-
                         <div className='nvb-avatar'>
                             {isLogin
                                 ? <Avatar src={localStorage.getItem('avatar')} alt={localStorage.getItem('username')} id='avatar' style={{ height: '2.6rem', borderRadius: '50%', cursor: 'pointer' }} onClick={showMenuOnmouse} onBlur={blurMenuAvatar} tabIndex="0" />
@@ -187,6 +189,7 @@ export default function Header({ isLogin, setIsLogin }) {
                         </div>
                     </form>
                 </div>
+                {getComponent()}
             </div>
         );
     }

@@ -8,13 +8,17 @@ import Posts from './Posts';
 import Teams from './Teams';
 import AccountDetailsProvider from './context/AccountDetailsContext';
 import PostDetailsProvider from './context/PostDetailsContext';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import Questions from './Questions';
+import QuestionContextProvider from './context/providers/QuestionContext';
+import QuestionDetailsProvider from './context/QuestionDetailsContext';
 
 function DataProviders({ children }) {
     return (
         <TeamContextProvider>
             <PostContextProvider>
-                <AccountContextProvider>{children}</AccountContextProvider>
+                <QuestionContextProvider>
+                    <AccountContextProvider>{children}</AccountContextProvider>
+                </QuestionContextProvider>
             </PostContextProvider>
         </TeamContextProvider>
     );
@@ -22,9 +26,11 @@ function DataProviders({ children }) {
 
 function DialogProviders({ children }) {
     return (
-        <PostDetailsProvider>
-            <AccountDetailsProvider>{children}</AccountDetailsProvider>
-        </PostDetailsProvider>
+        <QuestionDetailsProvider>
+            <PostDetailsProvider>
+                <AccountDetailsProvider>{children}</AccountDetailsProvider>
+            </PostDetailsProvider>
+        </QuestionDetailsProvider>
     );
 }
 
@@ -90,19 +96,12 @@ export default function Dashboard() {
                             bgcolor: 'ButtonShadow'
                         }}
                     >
-                        <CustomTab
-                            label="Dashboard"
-                            value="dashboard"
-                            // icon={<DashboardIcon/>}
-                            {...props}
-                        />
-                        <CustomTab
-                            label="Accounts"
-                            value="accounts"
-                            {...props}
-                        />
-                        <CustomTab label="Posts" value="posts" {...props} />
-                        <CustomTab label="Teams" value="teams" {...props} />
+                        <CustomTab label="Dashboard" value="dashboard" />
+                        <CustomTab label="Accounts" value="accounts" />
+                        <CustomTab label="Posts" value="posts" />
+                        <CustomTab label="Questions" value="questions" />
+                        <CustomTab label="Teams" value="teams" />
+                        <CustomTab label="Reports" value="reports" />
                     </Tabs>
                     <TabPanel value={value} index="dashboard">
                         1
@@ -113,8 +112,14 @@ export default function Dashboard() {
                     <TabPanel value={value} index="posts">
                         <Posts />
                     </TabPanel>
+                    <TabPanel value={value} index="questions">
+                        <Questions />
+                    </TabPanel>
                     <TabPanel value={value} index="teams">
                         <Teams />
+                    </TabPanel>
+                    <TabPanel value={value} index="reports">
+                        <h1>Reports</h1>
                     </TabPanel>
                 </Box>
             </DialogProviders>

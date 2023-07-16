@@ -10,6 +10,7 @@ import DropdownMenu from '../../../../components/common/DropdownMenu';
 import CustomTablePaginated from '../../../../components/common/CustomTablePaginated';
 import { PostDetailsContext } from '../../context/PostDetailsContext';
 import { AccountDetailsContext } from '../../context/AccountDetailsContext';
+import { TableColumn } from '../../util/classes';
 
 export default function AllPostsCard() {
     const { posts, changePage, isLoading, totalPosts } =
@@ -19,64 +20,51 @@ export default function AllPostsCard() {
     // #region data
 
     const columns = [
-        {
-            id: 'title',
-            label: 'Title',
-            minWidth: 350,
-            component: (row) => <ViewId data={row.title} max={10} />
-        },
-        {
-            id: 'creator',
-            label: 'Creator',
-            minWidth: 100,
-            component: (row) => row.emailCreator,
-            handleClick: (row) => handleOpenFetch(row.emailCreator)
-        },
-        {
-            id: 'createdAt',
-            label: 'Created At',
-            minWidth: 100,
-            component: (row) => formatDate(row.date)
-        },
-        {
-            id: 'interaction',
-            label: 'Interaction',
-            minWidth: 100,
-            component: (row) => {
-                return (
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Typography
-                            sx={{
-                                display: 'flex',
-                                gap: 1,
-                                bgcolor: 'rgb(202, 213, 255)',
-                                p: 1,
-                                borderRadius: 1,
-                                fontWeight: 700,
-                                color: 'rgb(17, 26, 164)',
-                            }}
-                        >
-                            <InsertCommentIcon />
-                            {row.ListComment.length}
-                        </Typography>
-                        <Typography
-                            sx={{
-                                display: 'flex',
-                                gap: 1,
-                                bgcolor: 'rgb(255, 216, 216)',
-                                p: 1,
-                                borderRadius: 1,
-                                fontWeight: 700,
-                                color: 'rgb(211, 21, 21)'
-                            }}
-                        >
-                            <FavoriteIcon />
-                            {row.ListEmailLiked.length}
-                        </Typography>
-                    </Box>
-                );
-            }
-        }
+        new TableColumn('title', 'Title', 350, (row) => (
+            <ViewId data={row.title} max={10} />
+        )),
+        new TableColumn(
+            'creator',
+            'Creator',
+            100,
+            (row) => row.emailCreator,
+            (row) => handleOpenFetch(row.emailCreator)
+        ),
+        new TableColumn('createdAt', 'Created At', 100, (row) =>
+            formatDate(row.date)
+        ),
+        new TableColumn('interaction', 'Interaction', 100, (row) => (
+            <Box display="flex" alignItems="center" gap={1}>
+                <Typography
+                    sx={{
+                        display: 'flex',
+                        gap: 1,
+                        bgcolor: 'rgb(202, 213, 255)',
+                        p: 1,
+                        borderRadius: 1,
+                        fontWeight: 700,
+                        color: 'rgb(17, 26, 164)'
+                    }}
+                >
+                    <InsertCommentIcon />
+                    {row.ListComment.length}
+                </Typography>
+                <Typography
+                    sx={{
+                        display: 'flex',
+                        gap: 1,
+                        bgcolor: 'rgb(255, 216, 216)',
+                        p: 1,
+                        borderRadius: 1,
+                        fontWeight: 700,
+                        color: 'rgb(211, 21, 21)'
+                    }}
+                >
+                    <FavoriteIcon />
+                    {row.ListEmailLiked.length}
+                </Typography>
+            </Box>
+        ))
     ];
 
     function Actions({ row }) {

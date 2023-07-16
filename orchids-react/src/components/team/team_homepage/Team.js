@@ -1,13 +1,15 @@
 import { Box, Grid, Typography, Button, Container, Stack, IconButton, Tooltip, Paper } from '@mui/material'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { GetTeamRole, getSpecificTeamDetails, getTeamPostsByTimestamp, getTeamPostsByTimestampDefault } from '../../../api/teamAPI';
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getTeamPostsByTimestamp, getTeamPostsByTimestampDefault } from '../../../api/teamAPI';
 import './Team.scss'
-import { EditTeamContext } from '../team_edit/EditTeamContext';
 import IconImage from '../../common/IconImage';
 import TeamSkeleton from './TeamSkeleton';
 import CreateTeamPost from './CreateTeamPost';
 import WaitPost from '../../home/WaitPost';
+import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
+import { TeamPostContext } from '../../../context/team/TeamPostsContextProvider';
+import { TeamPostDetailsContext } from '../../../context/team/TeamPostDetailsContext';
 
 function AdminOnly({ children, role }) {
     if (role === 'creator' || role === 'admin') return children;
@@ -21,54 +23,19 @@ function WriterOnly({ children, role }) {
 
 export default function Team() {
 
-    const [openCreatePost, setOpenCreatePost] = useState(false);
-
-    const [isLoading, setIsLoading] = useState(true);
-    const [role, setRole] = useState('');
-
-    const { openDialog, setTeam } = useContext(EditTeamContext);
     const navigate = useNavigate();
-    const teamId = useParams().id || navigate('/404');
-    const token = localStorage.getItem('token');
+    const { team: currentTeam, isLoadingTeams: isLoading, role } = useContext(TeamHomepageContext);
 
-    const [currentTeam, setCurrentTeam] = useState();
-
+    const [openCreatePost, setOpenCreatePost] = useState(false);
+    const { openEditTeamModal } = useContext(TeamHomepageContext);
     const handleCreatePost = () => {
         setOpenCreatePost(true);
     }
 
     const handleEditTeam = () => {
-        setTeam(currentTeam)
-        openDialog();
+        openEditTeamModal(currentTeam);
     }
 
-    // get current team details
-    useEffect(() => {
-        const fetchCurrentTeam = async () => {
-            const response = await getSpecificTeamDetails(teamId);
-            setCurrentTeam(response);
-
-            // get role
-            const currentEmail = localStorage.getItem('email');
-            if (!response) return navigate('/404');
-            else if (response.EmailOwner.email === currentEmail) {
-                setRole('creator');
-            } else {
-                const role = response.ListEmailMember.find(member => member.email === currentEmail)
-                if (role) setRole(role.role);
-                else setRole('')
-            }
-            setIsLoading(false);
-        }
-
-        fetchCurrentTeam();
-
-        return () => {
-            setCurrentTeam(null);
-            setIsLoading(true);
-            setRole('')
-        }
-    }, [navigate, teamId, token])
 
     if (isLoading) return <TeamSkeleton />
     if (!currentTeam) navigate('/404');
@@ -120,9 +87,7 @@ export default function Team() {
                                     <Button variant='contained' onClick={handleCreatePost}>Tạo</Button>
                                 </Box>
                             </WriterOnly>
-                            {/* ! ADD CARDS AFTER HERE */}
-                            {/* TEMPLATE CARD */}
-                            <Feed currentTeam={currentTeam} />
+                            <Feed />
                         </Grid>
                     </Grid>
                 </main>
@@ -133,8 +98,11 @@ export default function Team() {
 }
 
 function CardPost({ post }) {
+
+    const { handleOpen } = useContext(TeamPostDetailsContext);
+
     return (
-        <Box className='card-post card' id={post.date}>
+        <Box className='card-post card' id={post.date} onClick={() => handleOpen(post._id)}>
             <Typography variant='h5' fontWeight="700" mb={.5}>{post.title}</Typography>
             <Box display="flex" gap={3} mb={1.5}>
                 <Typography variant='body1' mb={.5} >{post.emailCreator} - {FormatDate(post.date)}</Typography>
@@ -146,46 +114,59 @@ function CardPost({ post }) {
     )
 }
 
-function Feed({ currentTeam }) {
+function Feed() {
 
     const [isPostLoad, setIsPostLoad] = useState(true);
-    const [listPosts, setListPosts] = useState();
+    // const [listPosts, setListPosts] = useState();
+
+    const { team } = useContext(TeamHomepageContext);
+    const { listPosts, getNextPosts } = useContext(TeamPostContext);
+
+
+
+    // useEffect(() => {
+    //     const getPostsDefault = async () => {
+    //         const response = await getTeamPostsByTimestampDefault(currentTeam.email);
+    //         setListPosts(response);
+    //     }
+
+    //     getPostsDefault();
+    // }, [currentTeam.email])
 
     useEffect(() => {
-        const getPostsDefault = async () => {
-            const response = await getTeamPostsByTimestampDefault(currentTeam.email);
-            setListPosts(response);
-        }
-
-        getPostsDefault();
-    }, [currentTeam.email])
-
-    useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = async () => {
             const element = document.documentElement;
             const maxScroll = element.scrollHeight - element.clientHeight;
-
             const scrollValue = element.scrollTop;
 
-            if (scrollValue >= maxScroll && isPostLoad) {
+            if (scrollValue >= maxScroll - 10 && isPostLoad) {
                 const elements = document.getElementsByClassName('card-post');
                 if (elements.length > 0) {
                     const lastElement = elements[elements.length - 1];
                     const lastElementId = lastElement.id;
 
-                    getTeamPostsByTimestamp(currentTeam.email, lastElementId).then(res => {
-                        if (res) {
-                            if (res.length === 0) {
-                                var waitPost = document.getElementById('wait-post');
-                                if (waitPost) {
-                                    waitPost.style.display = 'none';
-                                }
-                                setIsPostLoad(false);
-                            } else {
-                                setListPosts([...listPosts, ...res]);
-                            }
+                    const nextPosts = await getNextPosts(lastElementId);
+                    if (nextPosts === 0) {
+                        var waitPost = document.getElementById('wait-post');
+                        if (waitPost) {
+                            waitPost.style.display = 'none';
                         }
-                    })
+                        setIsPostLoad(false);
+                    }
+
+                    // getTeamPostsByTimestamp(currentTeam.email, lastElementId).then(res => {
+                    //     if (res) {
+                    //         if (res.length === 0) {
+                    //             var waitPost = document.getElementById('wait-post');
+                    //             if (waitPost) {
+                    //                 waitPost.style.display = 'none';
+                    //             }
+                    //             setIsPostLoad(false);
+                    //         } else {
+                    //             setListPosts([...listPosts, ...res]);
+                    //         }
+                    //     }
+                    // })
 
                 }
             }
@@ -196,7 +177,7 @@ function Feed({ currentTeam }) {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         }
-    }, [currentTeam.email, isPostLoad, listPosts])
+    }, [team.email, isPostLoad, listPosts, getNextPosts])
 
     if (listPosts === undefined) return <WaitPost />
 

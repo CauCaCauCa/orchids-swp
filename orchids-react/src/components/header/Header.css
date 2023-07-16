@@ -55,7 +55,12 @@
         background-color: #e6e6e6cf;
     }
 
-    .search input {
+    .search {
+        display: flex;
+        align-items: center;
+    }
+
+    /* .search input {
         width: 13rem;
         height: 2rem;
         border-radius: 1rem;
@@ -63,7 +68,7 @@
         margin-top: -5rem;
         border: none;
         background-color: #ebeef1;
-    }
+    } */
 
     .nvb-notification {
         border-radius: 50%;

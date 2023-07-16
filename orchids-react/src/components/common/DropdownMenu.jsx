@@ -1,6 +1,13 @@
 import { Box, IconButton, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 
+export class Option {
+    constructor(name, onClick) {
+        this.name = name || 'Option';
+        this.onClick = onClick || (() => {});
+    }
+}
+
 export default function DropdownMenu({ Icon, options }) {
     const [anchor, setAnchor] = useState(null);
     const open = Boolean(anchor);
@@ -31,8 +38,11 @@ export default function DropdownMenu({ Icon, options }) {
                 onClose={handleClose}
             >
                 {options.map((option, index) => (
-                    <MenuItem onClick={handleClose} key={index}>
-                        {option}
+                    <MenuItem onClick={() => {
+                        option.onClick();
+                        handleClose();
+                    }} key={index}>
+                        {option.name}
                     </MenuItem>
                 ))}
             </Menu>
