@@ -20,6 +20,7 @@ const postRouter = require('../routes/post.router');
 const questionRouter = require('../routes/question.router');
 const teamRouter = require('../routes/team.router');
 const notificationRouter = require('../routes/notification.router');
+const adminRouter = require('../routes/admin.router');
 // Import other routers as needed
 
 // Define the main route
@@ -35,6 +36,8 @@ app.use('/post', postRouter);
 app.use('/question', questionRouter);
 app.use('/team', teamRouter);
 app.use('/notification', notificationRouter);
+app.use('/admin', adminRouter);
+
 // Use other routers as needed
 
 module.exports = app;
