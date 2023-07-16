@@ -1,6 +1,8 @@
 const { ObjectId } = require('mongodb');
 const { connect } = require('../configs/MongoDB');
 const Notification = require('../modules/notification.module');
+const { getAccountInfoByEmail } = require('./account.services');
+const { getTeam } = require('./team.services');
 
 // Create notification for user personl when thier posts are commented or their questions are answered
 async function createNotificationToPersonal(from, Id, type) {
@@ -17,6 +19,36 @@ async function createNotificationToPersonal(from, Id, type) {
         close();
         return result;
     }
+}
+
+// create notification for followers when user post
+async function createNotificationToFollowers(from, Id, type) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+    // from : email of user who post
+    // postId : id of post
+    var listTo = [];
+    if (from.includes('@orchids')) {
+        var result = await getTeam(from).ListEmailFollower;
+        listTo = result.ListEmailFollower;
+    } else {
+        var result = await getAccountInfoByEmail(from);
+        listTo = result.ListEmailFollower;
+    }
+
+    for (const to of listTo) {
+        var notification = {
+            from: from,
+            to: to,
+            type: type,
+            id: Id,
+            date: Date.now(),
+            hasSeen: false,
+        };
+        if (notification.from !== notification.to) {
+            await collection.insertOne(notification);
+        }
+    }
+    close();
 }
 
 // get all notifications of user
@@ -49,6 +81,7 @@ module.exports = {
     getNotifications,
     setHasSeen,
     deleteNotification,
+    createNotificationToFollowers,
 }
 
 
