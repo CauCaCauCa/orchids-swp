@@ -3,7 +3,7 @@ import useFetch from "../../hooks/useFetch";
 import { createTeamPost, getTeamPostsByTimestamp, getTeamPostsByTimestampDefault } from "../../api/teamAPI";
 import { TeamHomepageContext } from "./TeamHomepageContext";
 import { NotificationContext } from "../NotificationContext";
-import TeamPostDetailsContextProvider from "./TeamPostDetailsContext";
+import TeamPostDetailsContextProvider from "./TeamPostDetailsContextOLD";
 import { CommentPost, LikeCommentPost, UnlikeCommentPost } from "../../api/postAPI";
 
 export const TeamPostContext = createContext();

@@ -199,3 +199,13 @@ export async function getListTeamInfoByEmails(listEmailTeam) {
         })
     })
 }
+
+export async function toggleFollowTeam(teamEmail) {
+    return fetchAPI({
+        method: 'POST',
+        uri: `/team/${teamEmail}/toggle-follow`,
+        Headers: {
+            'authorization': localStorage.getItem('token')
+        },
+    })
+}

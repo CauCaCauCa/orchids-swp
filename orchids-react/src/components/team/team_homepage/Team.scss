@@ -17,6 +17,13 @@
       }
     }
 
+    .follow {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      transform: translateY(150%);
+    }
+
     .floating {
       position: absolute;
       top: 77.5%;

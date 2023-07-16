@@ -352,4 +352,16 @@ router.post('/get-list-info-team-by-emails', async (req, res) => {
     }
 }) 
 
+router.post('/:teamEmail/toggle-follow', sessionKeyAuth.CheckTimeoutToken, async (req, res) => {
+    try {
+        const teamEmail = req.params.teamEmail;
+        const email = sessionKeyAuth.getEmailFromToken(req, res);
+        const result = await teamService.followTeam(email, teamEmail);
+        res.status(200).send(result);
+    } catch(error) {
+        Logger.error(error);
+        res.status(400).send(error.message);
+    }
+})
+
 module.exports = router

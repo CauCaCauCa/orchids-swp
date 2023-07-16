@@ -23,7 +23,8 @@ import { TeamPostContext } from './TeamPostsContextProvider';
 export const TeamPostDetailsContext = createContext();
 
 export default function TeamPostDetailsContextProvider({ children }) {
-    const { listPosts, addComment, toggleLikeComment } = useContext(TeamPostContext);
+    const { listPosts, addComment, toggleLikeComment } =
+        useContext(TeamPostContext);
     const [id, setId] = useState(null);
     const current = useMemo(() => {
         return listPosts?.find((post) => post._id === id);
@@ -36,36 +37,40 @@ export default function TeamPostDetailsContextProvider({ children }) {
 
     useEffect(() => {
         setListComments(current?.ListComment);
-    }, [current])
+    }, [current]);
 
     const comments = useMemo(() => {
-        return listComments?.sort((a, b) => {
-            if (a.date > b.date) return -1;
-            if (a.date < b.date) return 1;
-            return 0;
-        }).map((comment) => (
-            <Paper
-                variant="outlined"
-                sx={{ p: 2, width: '100%', mt: 2 }}
-            >
-                <Typography variant="caption">
-                    {comment.email} |{' '}
-                    {formatDate(comment.date)}
-                </Typography>
-                <Typography
-                    variant="body2"
-                    dangerouslySetInnerHTML={{
-                        __html: comment.content
-                    }}
-                    mb={2}
-                />
-                <Chip icon={<FavoriteIcon />} label={comment.ListEmailLiked?.length} onClick={() => handleLikeComment(comment.date, comment.email)} />
-            </Paper>
-        ))
-    }, [listComments])
+        return listComments
+            ?.sort((a, b) => {
+                if (a.date > b.date) return -1;
+                if (a.date < b.date) return 1;
+                return 0;
+            })
+            .map((comment) => (
+                <Paper variant="outlined" sx={{ p: 2, width: '100%', mt: 2 }}>
+                    <Typography variant="caption">
+                        {comment.email} | {formatDate(comment.date)}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        dangerouslySetInnerHTML={{
+                            __html: comment.content
+                        }}
+                        mb={2}
+                    />
+                    <Chip
+                        icon={<FavoriteIcon />}
+                        label={comment.ListEmailLiked?.length}
+                        onClick={() =>
+                            handleLikeComment(comment.date, comment.email)
+                        }
+                    />
+                </Paper>
+            ));
+    }, [listComments]);
 
-    function handleOpen(postId) {
-        setId(postId);
+    function handleOpen(post) {
+        setId(post._id);
         setOpen(true);
     }
 
@@ -73,31 +78,41 @@ export default function TeamPostDetailsContextProvider({ children }) {
         const response = await addComment(id, commentTextField);
         if (response) {
             setCommentTextField('');
-            setListComments(prev => {
+            setListComments((prev) => {
                 return [response, ...prev];
-            })
+            });
         }
     }
 
     async function handleLikeComment(commentDate, commentCreator) {
-        const response = await toggleLikeComment(id, commentDate, commentCreator);
+        const response = await toggleLikeComment(
+            id,
+            commentDate,
+            commentCreator
+        );
         console.log(response);
         if (response) {
             const email = localStorage.getItem('email');
-            setListComments(prev => {
-                return prev.map(comment => {
-                    if (comment.date === commentDate && comment.email === commentCreator) {
-                        if(comment.ListEmailLiked.includes(email)) {
-                            console.log(comment)
-                            comment.ListEmailLiked = comment.ListEmailLiked.filter(item => item !== email);
-                            console.log(comment.ListEmailLiked)
+            setListComments((prev) => {
+                return prev.map((comment) => {
+                    if (
+                        comment.date === commentDate &&
+                        comment.email === commentCreator
+                    ) {
+                        if (comment.ListEmailLiked.includes(email)) {
+                            console.log(comment);
+                            comment.ListEmailLiked =
+                                comment.ListEmailLiked.filter(
+                                    (item) => item !== email
+                                );
+                            console.log(comment.ListEmailLiked);
                         } else {
                             comment.ListEmailLiked.push(email);
                         }
                     }
                     return comment;
-                })
-            })
+                });
+            });
         }
     }
 
@@ -122,7 +137,12 @@ export default function TeamPostDetailsContextProvider({ children }) {
                     </DialogContent>
                 </Dialog>
             ) : (
-                <Dialog open={open} onClose={() => setOpen(false)} PaperProps={{ sx: { width: "90vw" } }} maxWidth={false}>
+                <Dialog
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    PaperProps={{ sx: { width: '90vw' } }}
+                    maxWidth={false}
+                >
                     <DialogTitle>
                         <Box display="flex" alignItems="center">
                             <Typography variant="h6" flexGrow={1}>
@@ -200,10 +220,16 @@ export default function TeamPostDetailsContextProvider({ children }) {
                                             textTransform: 'none'
                                         }}
                                     >
-                                        <Typography variant="h6" fontWeight="700">
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="700"
+                                        >
                                             Likes
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="700">
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="700"
+                                        >
                                             {current.ListEmailLiked?.length}
                                         </Typography>
                                     </Paper>
@@ -219,7 +245,10 @@ export default function TeamPostDetailsContextProvider({ children }) {
                                             textTransform: 'none'
                                         }}
                                     >
-                                        <Typography variant="h6" fontWeight="700">
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="700"
+                                        >
                                             Share
                                         </Typography>
                                     </Paper>
@@ -249,8 +278,20 @@ export default function TeamPostDetailsContextProvider({ children }) {
                                         justifyContent="space-between"
                                         alignItems="center"
                                     >
-                                        <TextField variant='standard' fullWidth label='Add a comment' value={commentTextField} onChange={(e) => setCommentTextField(e.target.value)} />
-                                        <IconButton onClick={handleCreateComment}>
+                                        <TextField
+                                            variant="standard"
+                                            fullWidth
+                                            label="Add a comment"
+                                            value={commentTextField}
+                                            onChange={(e) =>
+                                                setCommentTextField(
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        <IconButton
+                                            onClick={handleCreateComment}
+                                        >
                                             <IosShareIcon />
                                         </IconButton>
                                     </Box>

@@ -16,7 +16,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   /* global google */
   <Providers>
-    {/* <CssBaseline /> */}
+    <CssBaseline />
     <App />
   </Providers>
 );

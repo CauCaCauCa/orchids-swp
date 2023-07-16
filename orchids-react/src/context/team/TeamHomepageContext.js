@@ -1,10 +1,17 @@
-import { createContext, useContext, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import useFetch from "../../hooks/useFetch";
-import { AddMemberToTeam, RemoveMemberFromTeam, UpdateMemberFromTeam, UpdateTeam, getSpecificTeamDetails } from "../../api/teamAPI";
-import { NotificationContext } from "../NotificationContext";
-import EditTeamModal from "../../components/team/team_edit/EditTeamModal";
-import TeamPostContextProvider from "./TeamPostsContextProvider";
+import { createContext, useContext, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import useFetch from '../../hooks/useFetch';
+import {
+    AddMemberToTeam,
+    RemoveMemberFromTeam,
+    UpdateMemberFromTeam,
+    UpdateTeam,
+    getSpecificTeamDetails,
+    toggleFollowTeam
+} from '../../api/teamAPI';
+import { NotificationContext } from '../NotificationContext';
+import EditTeamModal from '../../components/team/team_edit/EditTeamModal';
+import TeamPostContextProvider from './TeamPostsContextProvider';
 
 export const TeamHomepageContext = createContext();
 
@@ -12,7 +19,10 @@ export default function TeamHomepageContextProvider({ children }) {
     const navigate = useNavigate();
 
     const id = useParams().id || navigate('/404');
-    const [team, isLoadingTeams, refresh, setTeam] = useFetch(getSpecificTeamDetails, id);
+    const [team, isLoadingTeams, refresh, setTeam] = useFetch(
+        getSpecificTeamDetails,
+        id
+    );
     const { showSuccess, showError } = useContext(NotificationContext);
 
     const role = useMemo(() => {
@@ -20,11 +30,13 @@ export default function TeamHomepageContextProvider({ children }) {
         const currentEmail = localStorage.getItem('email');
         if (team.EmailOwner.email === currentEmail) return 'creator'; // check if user is creator
 
-        var role = team.ListEmailMember.find(member => member.email === currentEmail); // check if user is admin
+        var role = team.ListEmailMember.find(
+            (member) => member.email === currentEmail
+        ); // check if user is admin
         if (role) return role.role;
 
         return ''; // if none, then user is a viewer
-    }, [team])
+    }, [team]);
 
     // #region edit team modal
     const [isOpenEditTeamModal, setIsOpenEditTeamModal] = useState(false);
@@ -37,7 +49,13 @@ export default function TeamHomepageContextProvider({ children }) {
 
     function updateTeamDetails(name, description, bground, avatar) {
         const update = async () => {
-            const response = await UpdateTeam(team.email, name, description, bground, avatar);
+            const response = await UpdateTeam(
+                team.email,
+                name,
+                description,
+                bground,
+                avatar
+            );
 
             if (response) {
                 setTeam((prev) => {
@@ -53,83 +71,132 @@ export default function TeamHomepageContextProvider({ children }) {
             } else {
                 showError('Cập nhật thất bại');
             }
-        }
-        update()
+        };
+        update();
     }
 
     function updateTeamMember(memberEmail, role) {
         const updateMemberInDB = async () => {
-            const response = await UpdateMemberFromTeam(team.email, memberEmail, role);
+            const response = await UpdateMemberFromTeam(
+                team.email,
+                memberEmail,
+                role
+            );
             if (response) {
                 team.ListEmailMember = team.ListEmailMember.map((member) => {
                     if (member.details.email === memberEmail) {
                         member.role = role;
                     }
                     return member;
-                })
-                setTeam({ ...team })
-                showSuccess("Cập nhật thành công");
+                });
+                setTeam({ ...team });
+                showSuccess('Cập nhật thành công');
             } else {
-                showError("Cập nhật thất bại");
+                showError('Cập nhật thất bại');
             }
-        }
+        };
 
         updateMemberInDB();
     }
 
     function removeTeamMember(memberEmail) {
         const deleteMemberFromDB = async () => {
-            const response = await RemoveMemberFromTeam(team.email, memberEmail);
+            const response = await RemoveMemberFromTeam(
+                team.email,
+                memberEmail
+            );
             if (response) {
-                team.ListEmailMember = team.ListEmailMember.filter((mem) => mem.email !== memberEmail);
+                team.ListEmailMember = team.ListEmailMember.filter(
+                    (mem) => mem.email !== memberEmail
+                );
                 setTeam({ ...team });
-                showSuccess("Xóa thành công");
+                showSuccess('Xóa thành công');
+            } else {
+                showError('Xóa thất bại');
             }
-            else {
-                showError("Xóa thất bại");
-            }
-        }
+        };
 
         deleteMemberFromDB();
     }
 
     function addTeamMember(memberEmail, role) {
         const addMemberToDB = async () => {
-            const response = await AddMemberToTeam(team.email, memberEmail, role);
+            const response = await AddMemberToTeam(
+                team.email,
+                memberEmail,
+                role
+            );
             if (response) {
-                team.ListEmailMember.push(response)
-                setTeam({ ...team })
-                showSuccess("Thêm thành công");
+                team.ListEmailMember.push(response);
+                setTeam({ ...team });
+                showSuccess('Thêm thành công');
+            } else {
+                showError('Thêm thất bại');
             }
-            else {
-                showError("Thêm thất bại");
-            }
-        }
+        };
 
         addMemberToDB();
     }
 
+    async function followTeam() {
+        const response = await toggleFollowTeam(team.email);
+        if (response) {
+            if (!response.isFollowing) {
+                setTeam((prev) => {
+                    prev.ListEmailFollower = prev.ListEmailFollower.filter(
+                        (follower) => follower.email !== localStorage.getItem('email')
+                    );
+                    return { ...prev };
+                })
+            } else {
+                setTeam((prev) => {
+                    prev.ListEmailFollower.push({
+                        email: localStorage.getItem('email')
+                    });
+                    return { ...prev };
+                });
+            }
+
+            showSuccess('Cập nhật thành công!');
+            return true;
+        } else {
+            showError('Thất bại');
+            return false;
+        }
+    }
 
     // #endregion
 
-    if(isLoadingTeams) return <></>
+    if (isLoadingTeams) return <></>;
 
     return (
-        <TeamHomepageContext.Provider value={{
-            team, setTeam, isLoadingTeams, role, openEditTeamModal,
-            teamDetails: {
-                update: updateTeamDetails
-            },
-            members: {
-                add: addTeamMember,
-                remove: removeTeamMember,
-                update: updateTeamMember
-            },
-        }}>
+        <TeamHomepageContext.Provider
+            value={{
+                team,
+                setTeam,
+                isLoadingTeams,
+                role,
+                openEditTeamModal,
+                teamDetails: {
+                    update: updateTeamDetails
+                },
+                members: {
+                    add: addTeamMember,
+                    remove: removeTeamMember,
+                    update: updateTeamMember
+                },
+                actions: {
+                    follow: followTeam
+                }
+            }}
+        >
             <TeamPostContextProvider>
                 {children}
-                <EditTeamModal open={isOpenEditTeamModal} setOpen={setIsOpenEditTeamModal} />
+                <EditTeamModal
+                    open={isOpenEditTeamModal}
+                    setOpen={setIsOpenEditTeamModal}
+                />
             </TeamPostContextProvider>
         </TeamHomepageContext.Provider>
-    )
+    );
 }
