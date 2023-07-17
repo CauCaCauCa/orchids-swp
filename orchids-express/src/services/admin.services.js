@@ -211,9 +211,9 @@ async function GetQuestionsStats() {
 
     return {
         total: totalQuestions,
-        totalAnswers: totalAnswers[0].totalAnswers,
+        totalAnswers: totalAnswers[0]?.totalAnswers || 0,
         questionsCreatedInLast7Days,
-        latestQuestion: latestQuestion[0]
+        latestQuestion: latestQuestion[0] || null
     }
 }
 

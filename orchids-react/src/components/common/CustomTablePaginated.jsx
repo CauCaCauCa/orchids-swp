@@ -47,7 +47,7 @@ export default function CustomTablePaginated({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {isLoading ? (
+                    {!listOfObjects ? (
                         <>
                             {[...Array(DEFAULT_PAGE_SIZE)].map((_, index) => {
                                 return (

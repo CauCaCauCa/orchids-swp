@@ -76,7 +76,7 @@ export default function QuestionStatsCard() {
             />
             <Card
                 label="Latest questions"
-                data={data?.latestQuestion.content.slice(0, 20)}
+                data={data?.latestQuestion?.content.slice(0, 20)}
                 onClick={() => handleOpenFetch(data?.latestQuestion._id)}
                 Icon={() => (
                     <ContactSupportIcon
