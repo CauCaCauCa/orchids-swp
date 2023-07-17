@@ -364,4 +364,29 @@ router.post('/:teamEmail/toggle-follow', sessionKeyAuth.CheckTimeoutToken, async
     }
 })
 
+router.delete('/:teamEmail/leave', sessionKeyAuth.CheckTimeoutToken, ownership.isMemberOfTeam, async (req, res) => {
+    Logger.log("LEAVE TEAM");
+    try {
+        const teamEmail = req.params.teamEmail;
+        const memberEmail = sessionKeyAuth.getEmailFromToken(req, res);
+        const result = await teamService.leaveTeam(teamEmail, memberEmail);
+        res.status(200).send(result);
+    } catch(error) {
+        Logger.error(error);
+        res.status(400).send(error.message);
+    }
+})
+
+router.delete('/:teamEmail/delete-team', sessionKeyAuth.CheckTimeoutToken, ownership.isOwnerOfTeam, async (req, res) => {
+    Logger.log("DELETE TEAM");
+    try {
+        const teamEmail = req.params.teamEmail;
+        const result = await teamService.deleteTeam(teamEmail);
+        res.status(200).send(result);
+    } catch(error) {
+        Logger.error(error);
+        res.status(400).send(error.message);
+    }
+})
+
 module.exports = router

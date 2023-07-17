@@ -1,10 +1,12 @@
 const {
     getTeamsCollection,
-    getPostsCollection
+    getPostsCollection,
+    getAccountsCollection
 } = require('../configs/MongoDB');
 const { Team } = require('../modules/team.module');
 const { Post } = require('../modules/post.module');
 const AccountService = require('./account.services');
+const PostService = require('./post.services');
 const { TeamMember } = require('../modules/team.module');
 
 async function getTeam(teamEmail, projection = {}) {
@@ -368,6 +370,7 @@ async function getListInfoTeamByEmails(listEmails) {
 
 async function toggleFollowTeam(followerEmail, teamEmail) {
     const { collection, close } = await getTeamsCollection();
+    const { collection: accountCollection, close: closeAccountCollection } = await getAccountsCollection();
     const team = await getTeam(teamEmail);
     if (!team) {
         throw new Error(`Team ${teamEmail} does not exist`);
@@ -380,11 +383,19 @@ async function toggleFollowTeam(followerEmail, teamEmail) {
             { email: teamEmail },
             { $pull: { ListEmailFollower: followerEmail } }
         );
+        await accountCollection.updateOne(
+            { email: followerEmail },
+            { $pull: { ListEmailFollowing: teamEmail } }
+        )
     } else {
         result = await collection.updateOne(
             { email: teamEmail },
             { $push: { ListEmailFollower: followerEmail } }
         );
+        await accountCollection.updateOne(
+            { email: followerEmail },
+            { $push: { ListEmailFollowing: teamEmail } }
+        )
     }
     close();
     return {
@@ -393,6 +404,60 @@ async function toggleFollowTeam(followerEmail, teamEmail) {
         isFollowing: !isFollowing,
         ...result
     };
+}
+
+async function leaveTeam(teamEmail, memberEmail) {
+    const { collection, close } = await getTeamsCollection();
+
+    // remove the team from account attending
+    const result_account = await AccountService.removeEmailFromTeamAttendList(
+        memberEmail,
+        teamEmail
+    );
+
+    // remove the member from team
+    const result_team = await collection.updateOne(
+        { email: teamEmail },
+        { $pull: { ListEmailMember: { email: memberEmail } } }
+    );
+
+    close();
+    return { ...result_account, ...result_team };
+}
+
+async function deleteTeam(teamEmail) {
+    const { collection, close } = await getTeamsCollection();
+
+    const team = (await collection.find({ email: teamEmail }).toArray())[0];
+
+    const members = team.ListEmailMember;
+    var count = 0
+    members.forEach(async (member) => {
+        await AccountService.removeEmailFromTeamAttendList(member.email, teamEmail);
+        count++;
+    })
+
+    console.log(count);
+
+    const owner = team.EmailOwner;
+    const teamOwnerResponse = await AccountService.removeEmailFromTeamOwnerList(owner, teamEmail);
+    console.log(teamOwnerResponse);
+
+    const followers = team.ListEmailFollower;
+    count = 0;
+    await followers.forEach(async (follower) => {
+        await AccountService.removeEmailFromFollowingList(follower, teamEmail);
+        count++;
+    })
+    console.log(count);
+
+    const postResponse = await PostService.deleteAllPostsByTeam(teamEmail);
+    console.log(postResponse);
+
+    const response = await collection.deleteOne({ email: teamEmail });
+
+    close();
+    return response;
 }
 
 module.exports = {
@@ -415,7 +480,8 @@ module.exports = {
     getTeamPostsByTimestamp,
     getAllTeams,
     getListInfoTeamByEmails,
-    followTeam: toggleFollowTeam
+    followTeam: toggleFollowTeam,
+    leaveTeam
 };
 
 // // !test

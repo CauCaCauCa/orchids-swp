@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import EditTeamDescription from './EditTeamDescription';
 import EditTeamMembers from './EditTeamMembers';
 import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
+import EditTeamSettings from './EditTeamSettings';
 
 const style = {
     position: 'absolute',
@@ -69,23 +70,13 @@ export default function EditTeamModal({ open, setOpen }) {
                         <Tab label="Cài đặt" {...a11yProps(2)} />
                     </Tabs>
                     <TabPanel value={value} index={0}>
-                        <EditTeamDescription team={team} />
+                        <EditTeamDescription />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <EditTeamMembers team={team} />
+                        <EditTeamMembers />
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        <Typography variant="h5" fontWeight={900}>
-                            Cài đặt
-                        </Typography>
-                        <Paper
-                            elevation={3}
-                            sx={{ width: '100%', height: '100%', p: 2 }}
-                        >
-                            <Typography variant="h6" fontWeight={900}>
-                                Xóa nhóm
-                            </Typography>
-                        </Paper>
+                        <EditTeamSettings/>
                     </TabPanel>
                 </Box>
             </Fade>

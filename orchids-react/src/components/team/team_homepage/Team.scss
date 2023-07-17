@@ -22,6 +22,9 @@
       right: 0;
       bottom: 0;
       transform: translateY(150%);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
     }
 
     .floating {

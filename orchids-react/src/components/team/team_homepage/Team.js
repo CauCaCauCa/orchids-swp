@@ -18,6 +18,7 @@ import WaitPost from '../../home/WaitPost';
 import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
 import { TeamPostContext } from '../../../context/team/TeamPostsContextProvider';
 import { TeamPostDetailsContext } from '../../../context/team/TeamPostDetailsContextOLD';
+import { ConfirmContext } from '../../../context/ConfirmContext';
 
 function AdminOnly({ children, role }) {
     if (role === 'creator' || role === 'admin') return children;
@@ -30,6 +31,11 @@ function WriterOnly({ children, role }) {
     return null;
 }
 
+function MemberOnly({ children, role }) {
+    if (role === 'admin' || role === 'writer') return children;
+    return null;
+}
+
 export default function Team() {
     const navigate = useNavigate();
     const {
@@ -39,7 +45,10 @@ export default function Team() {
     } = useContext(TeamHomepageContext);
     const [openCreatePost, setOpenCreatePost] = useState(false);
     const { openEditTeamModal, actions } = useContext(TeamHomepageContext);
-    const [ isFollowing, setIsFollowing ] = useState(currentTeam?.ListEmailFollower.includes(localStorage.getItem('email')))
+    const { openConfirm } = useContext(ConfirmContext);
+    const [isFollowing, setIsFollowing] = useState(
+        currentTeam?.ListEmailFollower.includes(localStorage.getItem('email'))
+    );
     const handleCreatePost = () => {
         setOpenCreatePost(true);
     };
@@ -51,6 +60,11 @@ export default function Team() {
     const handleFollow = () => {
         setIsFollowing(!isFollowing);
         actions.follow();
+    };
+
+    const handleLeaveTeam = () => {
+        actions.leave();
+        navigate('/')
     }
 
     if (isLoading) return <TeamSkeleton />;
@@ -75,8 +89,8 @@ export default function Team() {
                         <Box id="details">
                             <Box className="name">{currentTeam.teamname}</Box>
                             <Box className="followers">
-                                {currentTeam.ListEmailFollower.length || 0} người theo
-                                dõi
+                                {currentTeam.ListEmailFollower.length || 0}{' '}
+                                người theo dõi
                             </Box>
                         </Box>
                     </Box>
@@ -90,6 +104,16 @@ export default function Team() {
                         >
                             {isFollowing ? 'Đang theo dõi' : 'Theo dõi'}
                         </Button>
+                        <MemberOnly role={role}>
+                            <Button
+                                variant="contained"
+                                size="large"
+                                color="error"
+                                onClick={() => openConfirm('Are you sure you want to leave the team?', () => handleLeaveTeam())}
+                            >
+                                Leave team
+                            </Button>
+                        </MemberOnly>
                     </Box>
                 </header>
                 <main className="main">

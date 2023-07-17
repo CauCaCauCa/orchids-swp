@@ -1,5 +1,5 @@
 const { Post, Comment } = require('../modules/post.module');
-const { connect } = require('../configs/MongoDB');
+const { connect, getPostsCollection } = require('../configs/MongoDB');
 const { ObjectId } = require('mongodb');
 
 // Get create post
@@ -139,6 +139,13 @@ async function UnlikeCommentPost(postId, email, date, EmailLiker) {
     return result;
 }
 
+async function deleteAllPostsByTeam(teamEmail) {
+    const { collection, close } = await getPostsCollection();
+    const result = await collection.deleteMany({emailCreator: teamEmail});
+    close();
+    return result;
+}
+
 module.exports = {
     CreatePost,
     UpdatePost,
@@ -151,7 +158,8 @@ module.exports = {
     CommentPost,
     DeleteCommentPost,
     LikeCommentPost,
-    UnlikeCommentPost
+    UnlikeCommentPost,
+    deleteAllPostsByTeam
 };
 
 async function main() {

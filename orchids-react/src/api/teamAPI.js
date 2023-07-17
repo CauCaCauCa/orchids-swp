@@ -200,10 +200,31 @@ export async function getListTeamInfoByEmails(listEmailTeam) {
     })
 }
 
+export async function leaveTeam(teamEmail) {
+    return fetchAPI({
+        method: 'DELETE',
+        uri: `/team/${teamEmail}/leave`,
+        Headers: {
+            'authorization': localStorage.getItem('token')
+        },
+        body: undefined
+    })
+}
+
 export async function toggleFollowTeam(teamEmail) {
     return fetchAPI({
         method: 'POST',
         uri: `/team/${teamEmail}/toggle-follow`,
+        Headers: {
+            'authorization': localStorage.getItem('token')
+        },
+    })
+}
+
+export async function deleteTeam(teamEmail) {
+    return fetchAPI({
+        method: 'DELETE',
+        uri: `/team/${teamEmail}/delete-team`,
         Headers: {
             'authorization': localStorage.getItem('token')
         },

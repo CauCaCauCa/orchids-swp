@@ -5,7 +5,7 @@ import { formatDate } from '../../../pages/admin/util/Utility';
 import DropdownMenu, { Option } from '../../common/DropdownMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-export default function EditTeamMembers({ team: teamObject }) {
+export default function EditTeamMembers() {
 
     const [openUpdateRole, setOpenUpdateRole] = useState(false);
     const [openCreateMember, setOpenCreateMember] = useState(false);
@@ -63,7 +63,7 @@ export default function EditTeamMembers({ team: teamObject }) {
                 </TableBody>
             </Table>
             <UpdateMemberModal open={openUpdateRole} setOpen={setOpenUpdateRole} currentMember={updateRoleTarget} />
-            <CreateMemberModal open={openCreateMember} setOpen={setOpenCreateMember} teamEmail={teamObject.email} setTeam={setTeam} team={team} />
+            <CreateMemberModal open={openCreateMember} setOpen={setOpenCreateMember} teamEmail={team.email} setTeam={setTeam} team={team} />
         </>
     )
 }

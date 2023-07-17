@@ -7,7 +7,9 @@ import {
     UpdateMemberFromTeam,
     UpdateTeam,
     getSpecificTeamDetails,
-    toggleFollowTeam
+    toggleFollowTeam,
+    leaveTeam as leaveTeamAPI,
+    deleteTeam
 } from '../../api/teamAPI';
 import { NotificationContext } from '../NotificationContext';
 import EditTeamModal from '../../components/team/team_edit/EditTeamModal';
@@ -110,9 +112,9 @@ export default function TeamHomepageContextProvider({ children }) {
                     (mem) => mem.email !== memberEmail
                 );
                 setTeam({ ...team });
-                showSuccess('Xóa thành công');
+                showSuccess('Cập nhật thành công');
             } else {
-                showError('Xóa thất bại');
+                showError('Cập nhật thất bại');
             }
         };
 
@@ -165,6 +167,24 @@ export default function TeamHomepageContextProvider({ children }) {
         }
     }
 
+    async function leaveTeam() {
+        const response = await leaveTeamAPI(team.email);
+        if(response) {
+            showSuccess('Rời nhóm thành công!');
+        } else {
+            showError('Rời nhóm thất bại');
+        }
+    }
+
+    async function deleteTeamAll() {
+        const response = await deleteTeam(team.email);
+        if(response) {
+            showSuccess('Xóa nhóm thành công!');
+        } else {
+            showError('Xóa nhóm thất bại');
+        }
+    }
+
     // #endregion
 
     if (isLoadingTeams) return <></>;
@@ -186,7 +206,9 @@ export default function TeamHomepageContextProvider({ children }) {
                     update: updateTeamMember
                 },
                 actions: {
-                    follow: followTeam
+                    follow: followTeam,
+                    leave: leaveTeam,
+                    deleteTeam: deleteTeamAll
                 }
             }}
         >
