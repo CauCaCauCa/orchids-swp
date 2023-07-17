@@ -10,10 +10,14 @@ import { Avatar } from '@mui/material';
 import { GetListUsernameByEmails } from '../../api/accountAPI';
 import { DeleteAnswer, DeleteQuestion, LikeAnswer, UnlikeAnswer } from '../../api/questionAPI';
 import { useNavigate } from 'react-router-dom';
+import { NotificationContext } from '../../context/NotificationContext';
+import { ConfirmContext } from '../../context/ConfirmContext';
 
 export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setListQuestion }) {
     const [isAnswerLoad, setIsAnswerLoad] = React.useState(true);
     const navigate = useNavigate();
+    const { showSuccess, showError, showInfo } = React.useContext(NotificationContext)
+    const { openConfirm } = React.useContext(ConfirmContext)
 
     function changeIsAnswerLoad() {
         setIsAnswerLoad(!isAnswerLoad);
@@ -86,7 +90,7 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
         DeleteAnswer(questionId, answerTime).then(res => {
             console.log(res);
             if (res.acknowledged === true && res.modifiedCount === 1) {
-                alert('Xóa câu trả lời thành công');
+                showSuccess('Xóa câu trả lời thành công');
                 setIsAnswerLoad(!isAnswerLoad);
                 // delete in list answer
                 qcard.answers.forEach((answer, index) => {
@@ -104,7 +108,6 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
         LikeAnswer(questionId, emailCreator, answerTime).then(res => {
             console.log(res);
             if (res.acknowledged === true) {
-                // alert('Thích câu trả lời thành công');
                 setIsAnswerLoad(!isAnswerLoad);
                 // add in list like
                 qcard.answers.forEach((answer) => {
@@ -121,7 +124,6 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
         UnlikeAnswer(questionId, emailCreator, answerTime).then(res => {
             console.log(res);
             if (res.acknowledged === true) {
-                // alert('Bỏ thích câu trả lời thành công');
                 setIsAnswerLoad(!isAnswerLoad);
                 // delete in list like
                 qcard.answers.forEach((answer, index) => {
@@ -172,11 +174,11 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
                         qcard.creatorEmail === localStorage.getItem('email') &&
                         <i className="fa-solid fa-trash-can-xmark"
                             onClick={() => {
-                                if (window.confirm('Bạn chắc chắn muốn xóa câu hỏi này?')) {
+                                openConfirm('Bạn chắc chắn muốn xóa câu hỏi này?', () => (
                                     DeleteQuestion(qcard._id).then(res => {
                                         console.log(res);
                                         if (res.acknowledged === true && res.deletedCount === 1) {
-                                            alert('Xóa câu hỏi thành công');
+                                            showSuccess('Xóa câu hỏi thành công');
                                             setIsPopup(false);
                                             if (listQuestion) {
                                                 // delete in list question
@@ -189,8 +191,8 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
                                                 setListQuestion([...listQuestion]);
                                             }
                                         }
-                                    });
-                                }
+                                    })
+                                ))
                             }}
                             style={{
                                 marginLeft: '1rem',

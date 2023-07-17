@@ -101,7 +101,7 @@ export async function DeletePost(postId) {
 export async function LikePost(postId) {
 
     if (!localStorage.getItem('token')) {
-        alert('You must login to like post!');
+        // alert('You must login to like post!');
         return { msg: 'You must login to like post!' };
     }
     return fetchAPI({
@@ -119,7 +119,7 @@ export async function LikePost(postId) {
 // TODO: unlike post.
 export async function UnlikePost(postId) {
     if (!localStorage.getItem('token')) {
-        alert('You must login to unlike post!');
+        // alert('You must login to unlike post!');
         return { msg: 'You must login to unlike post!' };
     }
     return fetchAPI({
@@ -137,7 +137,7 @@ export async function UnlikePost(postId) {
 // TODO: comment post.
 export async function CommentPost(postId, content) {
     if (!localStorage.getItem('token')) {
-        alert('You must login to comment post!');
+        // alert('You must login to comment post!');
         return { msg: 'You must login to comment post!' };
     }
     return fetchAPI({
@@ -173,7 +173,7 @@ export async function DeleteCommentPost(postId, date) {
 // like comment post.
 export async function LikeCommentPost(postId, date, emailCommentor) {
     if (!localStorage.getItem('token')) {
-        alert('You must login to like comment post!');
+        // alert('You must login to like comment post!');
         return { msg: 'You must login to like comment post!' };
     }
     return fetchAPI({
@@ -194,7 +194,7 @@ export async function LikeCommentPost(postId, date, emailCommentor) {
 // unlike comment post.
 export async function UnlikeCommentPost(postId, date, emailCommentor) {
     if (!localStorage.getItem('token')) {
-        alert('You must login to unlike comment post!');
+        // alert('You must login to unlike comment post!');
         return { msg: 'You must login to unlike comment post!' };
     }
     return fetchAPI({

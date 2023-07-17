@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { DeletePost, GetPostInfo, UpdatePost } from '../../api/postAPI';
 import Login from '../personal/Login';
 import { NotificationContext } from '../../context/NotificationContext';
+import { ConfirmContext } from '../../context/ConfirmContext';
 
 export default function UpdatePostPage() {
 
@@ -21,6 +22,7 @@ export default function UpdatePostPage() {
 function EditPost() {
 
     const { showError, showSuccess } = useContext(NotificationContext);
+    const { openConfirm } = useContext(ConfirmContext);
 
     const navigate = useNavigate();
     const editorRef = useRef(null);
@@ -104,7 +106,7 @@ function EditPost() {
     };
 
     const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this post?')) {
+        openConfirm('Are you sure you want to delete this post?', () => {
             DeletePost(postId).then(res => {
                 console.log(res);
                 if (res.acknowledged === true && res.deletedCount === 1) {
@@ -114,7 +116,7 @@ function EditPost() {
                     showError('Failed to delete post.')
                 }
             });
-        }
+        })
     };
 
     return (

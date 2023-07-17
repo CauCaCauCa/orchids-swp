@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 import './CreatePost.css';
 import {CreatePost} from '../../api/postAPI';
 import Login from '../personal/Login';
+import { NotificationContext } from '../../context/NotificationContext';
 
 export default function CreatePostPage() {
 
@@ -19,6 +20,8 @@ export default function CreatePostPage() {
 }
 
 function EditPost() {
+    const { showSuccess, showError, showInfo } = useContext(NotificationContext);
+
     const navigate = useNavigate();
     const editorRef = useRef(null);
     const quillRef = useRef(null);
@@ -50,7 +53,7 @@ function EditPost() {
                 if (type === 'image') {
                     setPreviewUrl(reader.result);
                 } else {
-                    alert('Not image');
+                    showError('Not image');
                 }
             };
             reader.readAsDataURL(file);
@@ -70,17 +73,17 @@ function EditPost() {
             if (title !== '' && content !== '') {
                 CreatePost(title, content, previewUrl).then(res => { 
                     if (res.acknowledged === true) {
-                        alert('success');
+                        showSuccess('Post created successfully');
                         navigate('/personal');
                     } else {
-                        alert('fail');
+                        showError('Failed to create post');
                     }
                 });
             } else {
-                alert('Please enter title and content');
+                showInfo('Please enter title and content');
             }
         } else {
-            alert('Please choose a image');
+            showInfo('Please choose a image');
         }
     };
 

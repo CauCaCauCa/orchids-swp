@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import jwtDecode from 'jwt-decode';
 import { GetPersonalInfoToken } from '../../api/accountAPI';
 import { useNavigate } from 'react-router-dom';
+import { NotificationContext } from '../../context/NotificationContext';
 
 
 export default function Login({ setIsLogin, getMini }) {
 
+    const { showError } = useContext(NotificationContext)
     const navigate = useNavigate();
 
     async function handleCredentialResponse(response) {
@@ -43,7 +45,7 @@ export default function Login({ setIsLogin, getMini }) {
                         // navigate('/');
                     })
                 } else {
-                    alert(data.msg);
+                    showError(data.msg);
                 }
             })
     }

@@ -1,17 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { CommentPost } from '../../api/postAPI';
+import { NotificationContext } from '../../context/NotificationContext';
 
 export default function Comment({ postId, setPost, post }) {
   const [commentText, setCommentText] = useState('');
-
+  const { showSuccess, showError, showInfo } = useContext(NotificationContext);
 
   const handleCommentSubmit = () => {
     if (commentText !== '') {
       CommentPost(postId, commentText).then(res => {
         if (res.acknowledged === true) {
-          alert('Comment successfully!');
+          showSuccess('Comment successfully!');
           setCommentText('');
           quillRef.current.root.innerHTML = '';
           post.ListComment.push({ date: Date.now(), email: localStorage.getItem('email'), content: commentText, ListEmailLiked: [] })
@@ -21,11 +22,11 @@ export default function Comment({ postId, setPost, post }) {
           });
           setPost({ ...post });
         } else {
-          alert('Comment fail!');
+          showError('Comment fail!');
         }
       })
     } else {
-      alert('Please enter a comment');
+      showInfo('Please enter a comment');
     }
   };
 

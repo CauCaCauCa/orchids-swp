@@ -104,7 +104,7 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                 ).ListEmailLiked.push(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                alert('like fail');
+                showError('like fail');
             }
         });
     }
@@ -119,7 +119,7 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                 ).ListEmailLiked.pop(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                alert('unlike fail');
+                showError('unlike fail');
             }
         });
     }
@@ -294,56 +294,57 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                                                             right: '10rem',
                                                             cursor: 'pointer'
                                                         }}
-                                                        onClick={() => {
-                                                            if (
-                                                                window.confirm(
-                                                                    'Are you sure you wish to delete this item?'
-                                                                )
-                                                            ) {
-                                                                var date =
-                                                                    comment.date;
-                                                                var postId =
-                                                                    post._id;
-                                                                var email =
-                                                                    comment.email;
-                                                                DeleteCommentPost(
-                                                                    postId,
-                                                                    date
-                                                                ).then(
-                                                                    (res) => {
-                                                                        if (
-                                                                            res.acknowledged ==
-                                                                            true
-                                                                        ) {
-                                                                            showSuccess(
-                                                                                'Comment deleted successfully.'
-                                                                            );
-                                                                            var newCommentList =
-                                                                                post.ListComment.filter(
-                                                                                    (
-                                                                                        commentfilter
-                                                                                    ) =>
-                                                                                        commentfilter.date !=
-                                                                                            comment.date ||
-                                                                                        commentfilter.email !=
-                                                                                            comment.email
+                                                        onClick={() =>
+                                                            openConfirm(
+                                                                'Bạn muốn xóa bình luận này?',
+                                                                () => {
+                                                                    var date =
+                                                                        comment.date;
+                                                                    var postId =
+                                                                        post._id;
+                                                                    var email =
+                                                                        comment.email;
+                                                                    DeleteCommentPost(
+                                                                        postId,
+                                                                        date
+                                                                    ).then(
+                                                                        (
+                                                                            res
+                                                                        ) => {
+                                                                            if (
+                                                                                res.acknowledged ==
+                                                                                true
+                                                                            ) {
+                                                                                showSuccess(
+                                                                                    'Comment deleted successfully.'
                                                                                 );
-                                                                            post.ListComment =
-                                                                                newCommentList;
-                                                                            setPost(
-                                                                                {
-                                                                                    ...post
-                                                                                }
-                                                                            );
-                                                                        } else {
-                                                                            showError(
-                                                                                'Failed to delete comment. Please try again.'
-                                                                            );
+                                                                                var newCommentList =
+                                                                                    post.ListComment.filter(
+                                                                                        (
+                                                                                            commentfilter
+                                                                                        ) =>
+                                                                                            commentfilter.date !=
+                                                                                                comment.date ||
+                                                                                            commentfilter.email !=
+                                                                                                comment.email
+                                                                                    );
+                                                                                post.ListComment =
+                                                                                    newCommentList;
+                                                                                setPost(
+                                                                                    {
+                                                                                        ...post
+                                                                                    }
+                                                                                );
+                                                                            } else {
+                                                                                showError(
+                                                                                    'Failed to delete comment. Please try again.'
+                                                                                );
+                                                                            }
                                                                         }
-                                                                    }
-                                                                );
-                                                            }
-                                                        }}
+                                                                    );
+                                                                }
+                                                            )
+                                                        }
                                                     />
                                                 )}
                                             </div>

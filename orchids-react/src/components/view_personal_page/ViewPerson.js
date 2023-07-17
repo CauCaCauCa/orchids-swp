@@ -134,7 +134,7 @@ export default function ViewPersonal() {
                     var newList = dataCur.ListEmailFollower.filter(email => email !== localStorage.getItem('email'));
                     setDataCur({ ...dataCur, ListEmailFollower: newList });
                     UnfollowUser(dataCur.email).then(res => {
-                        alert('Bỏ theo dõi thành công');
+                        showSuccess('Bỏ theo dõi thành công');
                     });
 
                 } else {
@@ -142,7 +142,7 @@ export default function ViewPersonal() {
                     var newList = [...dataCur.ListEmailFollower, localStorage.getItem('email')];
                     setDataCur({ ...dataCur, ListEmailFollower: newList });
                     FollowUser(dataCur.email).then(res => {
-                        alert('Theo dõi thành công');
+                        showSuccess('Theo dõi thành công');
                     });
                 }
             }
