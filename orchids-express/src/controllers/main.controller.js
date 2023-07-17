@@ -21,6 +21,7 @@ const questionRouter = require('../routes/question.router');
 const teamRouter = require('../routes/team.router');
 const notificationRouter = require('../routes/notification.router');
 const adminRouter = require('../routes/admin.router');
+const searchRouter = require('../routes/search.router');
 // Import other routers as needed
 
 // Define the main route
@@ -37,6 +38,7 @@ app.use('/question', questionRouter);
 app.use('/team', teamRouter);
 app.use('/notification', notificationRouter);
 app.use('/admin', adminRouter);
+app.use('/search', searchRouter);
 
 // Use other routers as needed
 
