@@ -14,7 +14,7 @@ export default function Donate() {
             GetListDonation().then(res => {
                 handleData(res);
             });
-        }, 30000);
+        }, 10000);
 
         return () => {
             // Cleanup function to clear the interval when the component unmounts

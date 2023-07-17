@@ -130,7 +130,7 @@ export default function NotificationPopup({ children }) {
                                                     }}
                                                     onClick={() => {
                                                         setHasSeen(item._id);
-                                                        if (item.type === 'comment') {
+                                                        if (item.type === 'comment' || item.type === 'has a new post') {
                                                             navigate(`/post-page?id=${item.id}`);
                                                         } else {
                                                             navigate(`/question-page?id=${item.id}`);

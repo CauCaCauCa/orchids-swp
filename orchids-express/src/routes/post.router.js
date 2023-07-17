@@ -4,7 +4,7 @@ const PostServices = require('../services/post.services');
 const AccountServices = require('../services/account.services');
 const TeamServices = require('../services/team.services');
 const logAuth = require('../middlewares/authentication.middleware');
-const { createNotificationToPersonal } = require('../services/notification.services');
+const { createNotificationToPersonal, createNotificationToFollowers } = require('../services/notification.services');
 
 
 // TODO: create post - require token
@@ -14,6 +14,7 @@ router.post('/create', logAuth.CheckTimeoutToken, async (req, res) => {
     var post = req.body;
     var result = await PostServices.CreatePost(post, emailCreator);
     await AccountServices.updateNumberPost(emailCreator);
+    createNotificationToFollowers(emailCreator, result.insertedId.toString().split('"')[0], 'has a new post');
     res.send(result);
 });
 // TODO: delete post - require token
