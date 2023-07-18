@@ -3,6 +3,7 @@ import { TextField, Typography, Button, Box, Paper, Dialog, DialogActions } from
 import { FileUploader } from "react-drag-drop-files";
 import EditImageOverlay from '../../common/EditImageOverlay';
 import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
+import IconImage from '../../common/IconImage';
 
 export default function EditTeamDescription() {
     const { team, teamDetails } = useContext(TeamHomepageContext);
@@ -52,13 +53,15 @@ export default function EditTeamDescription() {
                     <Box>
                         <Typography variant="body1" fontWeight={900} mb={1}>Hình đại diện</Typography>
                         <EditImageOverlay handle={handleSetAvatar} width="10rem" height="10rem" >
-                            <Box component="img" src={avatar} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} />
+                            <IconImage src={avatar} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} />
+                            {/* <Box component="img" src={avatar} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} /> */}
                         </EditImageOverlay>
                     </Box>
                     <Box>
                         <Typography variant="body1" fontWeight={900} mb={1}>Hình nền</Typography>
                         <EditImageOverlay handle={handleSetBground} width="100%" height="20rem">
-                            <Box component="img" src={bground} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} />
+                            <IconImage src={bground} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} />
+                            {/* <Box component="img" src={bground} alt="team-logo" borderRadius="10px" width="100%" height="100%" sx={{ objectFit: "cover" }} /> */}
                         </EditImageOverlay>
                     </Box>
                 </Paper>

@@ -56,8 +56,7 @@ export default function AccountDetailsProvider({ children }) {
                     <DialogTitle>Account Details</DialogTitle>
                     <DialogContent>
                         <Box position="relative" mb={10}>
-                            <Box
-                                component="img"
+                            <IconImage
                                 src={current.bground}
                                 alt="background"
                                 height="20rem"

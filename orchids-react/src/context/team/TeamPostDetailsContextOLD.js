@@ -1,6 +1,7 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import PostPage from '../../components/post_page/PostPage';
 import { TeamHomepageContext } from './TeamHomepageContext';
+import { GetTeam } from '../../api/teamAPI';
 
 export const TeamPostDetailsContext = createContext();
 
@@ -21,8 +22,12 @@ export default function TeamPostDetailsContextProvider({ children }) {
     const { team } = useContext(TeamHomepageContext);
 
     const isMember = useMemo(() => {
-        return team.EmailOwner === localStorage.getItem('email') || team.EmailOwner.email === localStorage.getItem('email') || team.ListEmailMember.includes(localStorage.getItem('email'));
-    }, [team])
+        return (
+            team.EmailOwner === localStorage.getItem('email') ||
+            team.EmailOwner.email === localStorage.getItem('email') ||
+            team.ListEmailMember.includes(localStorage.getItem('email'))
+        );
+    }, [team]);
 
     function handleOpen(data) {
         setData(data);
@@ -50,7 +55,10 @@ export default function TeamPostDetailsContextProvider({ children }) {
                                 cursor: 'pointer'
                             }}
                         ></i>
-                        <PostPage PostData={data} isAllowedEdits={isMember} />
+                        <PostPage
+                            PostData={{ ...data, username: team.teamname, avatar: team.avatar }}
+                            isAllowedEdits={isMember}
+                        />
                     </div>
                 </div>
             )}

@@ -1,4 +1,4 @@
-import { Box, Paper, Skeleton, Tooltip, Typography } from '@mui/material';
+import { Box, CssBaseline, Paper, Skeleton, Tooltip, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PersonOffIcon from '@mui/icons-material/PersonOff';

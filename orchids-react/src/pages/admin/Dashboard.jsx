@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, CssBaseline, ScopedCssBaseline, Tab, Tabs } from '@mui/material';
 import React, { useState } from 'react';
 import Accounts from './Accounts';
 import AccountContextProvider from './context/providers/AccountContext';
@@ -73,56 +73,59 @@ function CustomTab({ label, value, icon: IconComponent, ...other }) {
 }
 
 export default function Dashboard() {
-    const [value, setValue] = useState('dashboard');
+    const [value, setValue] = useState('accounts');
 
     const handleChange = (_, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <DataProviders>
-            <DialogProviders>
-                <Box pt={9} height="100%" display="flex">
-                    <Tabs
-                        orientation="vertical"
-                        variant="scrollable"
-                        value={value}
-                        onChange={handleChange}
-                        sx={{
-                            borderRight: 1,
-                            borderColor: 'divider',
-                            minWidth: 200,
-                            minHeight: '100vh',
-                            bgcolor: 'ButtonShadow'
-                        }}
-                    >
-                        <CustomTab label="Dashboard" value="dashboard" />
-                        <CustomTab label="Accounts" value="accounts" />
-                        <CustomTab label="Posts" value="posts" />
-                        <CustomTab label="Questions" value="questions" />
-                        <CustomTab label="Teams" value="teams" />
-                        <CustomTab label="Reports" value="reports" />
-                    </Tabs>
-                    <TabPanel value={value} index="dashboard">
-                        1
-                    </TabPanel>
-                    <TabPanel value={value} index="accounts">
-                        <Accounts />
-                    </TabPanel>
-                    <TabPanel value={value} index="posts">
-                        <Posts />
-                    </TabPanel>
-                    <TabPanel value={value} index="questions">
-                        <Questions />
-                    </TabPanel>
-                    <TabPanel value={value} index="teams">
-                        <Teams />
-                    </TabPanel>
-                    <TabPanel value={value} index="reports">
-                        <h1>Reports</h1>
-                    </TabPanel>
-                </Box>
-            </DialogProviders>
-        </DataProviders>
+        <>
+            <CssBaseline/>
+            <DataProviders>
+                <DialogProviders>
+                    <Box pt={9} height="100%" display="flex">
+                        <Tabs
+                            orientation="vertical"
+                            variant="scrollable"
+                            value={value}
+                            onChange={handleChange}
+                            sx={{
+                                borderRight: 1,
+                                borderColor: 'divider',
+                                minWidth: 200,
+                                minHeight: '100vh',
+                                bgcolor: 'ButtonShadow'
+                            }}
+                        >
+                            {/* <CustomTab label="Dashboard" value="dashboard" /> */}
+                            <CustomTab label="Accounts" value="accounts" />
+                            <CustomTab label="Posts" value="posts" />
+                            <CustomTab label="Questions" value="questions" />
+                            <CustomTab label="Teams" value="teams" />
+                            {/* <CustomTab label="Reports" value="reports" /> */}
+                        </Tabs>
+                        <TabPanel value={value} index="dashboard">
+                            1
+                        </TabPanel>
+                        <TabPanel value={value} index="accounts">
+                            <Accounts />
+                        </TabPanel>
+                        <TabPanel value={value} index="posts">
+                            <Posts />
+                        </TabPanel>
+                        <TabPanel value={value} index="questions">
+                            <Questions />
+                        </TabPanel>
+                        <TabPanel value={value} index="teams">
+                            <Teams />
+                        </TabPanel>
+                        <TabPanel value={value} index="reports">
+                            <h1>Reports</h1>
+                        </TabPanel>
+                    </Box>
+                </DialogProviders>
+            </DataProviders>
+        </>
     );
 }

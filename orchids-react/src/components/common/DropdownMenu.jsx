@@ -37,14 +37,20 @@ export default function DropdownMenu({ Icon, options }) {
                 open={open}
                 onClose={handleClose}
             >
-                {options.map((option, index) => (
+                {!!options[0].onClick ? options.map((option, index) => (
                     <MenuItem onClick={() => {
                         option.onClick();
                         handleClose();
                     }} key={index}>
                         {option.name}
                     </MenuItem>
-                ))}
+                )) : (
+                    options.map((option, index) => (
+                        <MenuItem key={index} onClick={handleClose}>
+                            {option}
+                        </MenuItem>
+                    ))
+                )}
             </Menu>
         </Box>
     );

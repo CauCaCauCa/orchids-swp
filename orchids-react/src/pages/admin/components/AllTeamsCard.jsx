@@ -11,6 +11,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
 import { TeamContext } from "../context/providers/TeamContext";
 import CustomTablePaginated from "../../../components/common/CustomTablePaginated";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
@@ -52,10 +53,13 @@ const columns = [
 ];
 
 function Actions({ row }) {
+
+  const navigate = useNavigate();
+
   return (
     <>
       <Tooltip title="View account">
-        <IconButton>
+        <IconButton onClick={() => navigate(`/teams/${row.email}`)}>
           <RemoveRedEyeIcon />
         </IconButton>
       </Tooltip>
