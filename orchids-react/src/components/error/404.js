@@ -1,7 +1,10 @@
+import { Box } from '@mui/material'
 import React from 'react'
 
 export default function NotFound() {
   return (
-    <h1>Page not found</h1>
+    <Box mt={10} position="absolute">
+      Page not found
+    </Box>
   )
 }

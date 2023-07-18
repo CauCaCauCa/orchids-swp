@@ -11,7 +11,7 @@ export default function EditTeamSettings() {
 
     function handleDeleteTeam() {
         actions.deleteTeam();
-        navigate('/');
+        navigate('/personal/teams');
     }
 
     return (

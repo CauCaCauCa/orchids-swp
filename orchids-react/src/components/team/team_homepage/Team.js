@@ -74,7 +74,7 @@ export default function Team() {
         <>
             <Container id="team-home">
                 <header className="header">
-                    <Box
+                    <IconImage
                         component="img"
                         src={currentTeam.bground}
                         alt="team-image"

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Header from './components/header/Header';
 import Donate from './components/donate/Donate';
@@ -45,7 +45,7 @@ function App() {
         <Route path="/post-page" element={<PostPage />} />
         <Route path="/question-page" element={<QuestionLoadPage />} />
         <Route path="search-page" element={<SearchPage />} />
-        <Route path="/admin" element={<Dashboard/>} />
+        <Route path="/admin" element={localStorage.getItem('role') === 'AD' ? <Dashboard/> : <Navigate to={'/404'}/>} />
         <Route path="/view/user" element={<ViewPersonal />} />
         
         {/* Error pages */}
