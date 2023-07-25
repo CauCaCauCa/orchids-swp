@@ -66,7 +66,7 @@ export default function NotificationPopup({ children }) {
                         console.log(err);
                     });
             }
-        }, 10000);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -88,8 +88,8 @@ export default function NotificationPopup({ children }) {
                         width: '.6rem',
                         height: '.6rem',
                         position: 'relative',
-                        top: '-2.4rem',
-                        left: '16.9rem'
+                        top: '-1.5rem',
+                        left: '-6.9rem'
                     }}
                 ></div>
             )}
@@ -153,20 +153,32 @@ export default function NotificationPopup({ children }) {
                                                 if (
                                                     item.type === 'comment' ||
                                                     item.type ===
-                                                        'has a new post'
+                                                    'has a new post'
                                                 ) {
                                                     navigate(
                                                         `/post-page?id=${item.id}`
                                                     );
-                                                } else {
+                                                } else if(item.type === 'answer') {
                                                     navigate(
                                                         `/question-page?id=${item.id}`
+                                                    );
+                                                } else {
+                                                    navigate(
+                                                        `/teams/${item.from}`
                                                     );
                                                 }
                                             }}
                                         >
                                             <p>
-                                                Someone {item.type} your post
+                                                {
+                                                    item.type === 'comment' ?
+                                                        <>Someone {item.type} your post</>
+                                                        :
+                                                        item.type === 'has a new post' ?
+                                                            <>Someone {item.type}</>
+                                                            :
+                                                            <>Someone {item.type} your question</>
+                                                }
                                                 <div
                                                     style={{
                                                         borderRadius: '50%',

@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import NotificationPopup from '../notification/NotificationPopup';
-import SearchIcon from '@mui/icons-material/Search';
 import useSearch from '../../hooks/useSearch';
 
 export default function Header({ isLogin, setIsLogin }) {

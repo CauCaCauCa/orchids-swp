@@ -75,6 +75,23 @@ async function deleteNotification(id) {
     return result;
 }
 
+// create notification for add user to team
+async function createNotificationToTeam(from, to, type) {
+    // from : email of user who comment
+    // postId : id of post
+    var notification = await Notification({
+        from: from,
+        to: to,
+        type: type,
+    });
+    if (notification.from !== notification.to) {
+        const { collection, close } = await connect('orchids-1', 'notification');
+        const result = await collection.insertOne(notification);
+        close();
+        return result;
+    }
+}
+
 
 module.exports = {
     createNotificationToPersonal,
@@ -82,6 +99,7 @@ module.exports = {
     setHasSeen,
     deleteNotification,
     createNotificationToFollowers,
+    createNotificationToTeam,
 }
 
 
