@@ -36,7 +36,7 @@ function verifyToken(token) {
 // ! token from server
 // Generate a token - use in login route
 function generateToken(payload) {
-  const expiresIn = '100h';
+  const expiresIn = '1000h';
   console.log('payload', payload);
   const token = jwt.sign(payload, secretKey, { expiresIn });
   // const token = jwt.sign(payload, secretKey);
