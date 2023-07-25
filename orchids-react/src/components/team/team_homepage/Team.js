@@ -36,6 +36,11 @@ function MemberOnly({ children, role }) {
     return null;
 }
 
+function UserOnly({children, role}) {
+    if (!(role === 'creator' || role === 'admin' || role === 'writer')) return children;
+    return null;
+}
+
 export default function Team() {
     const navigate = useNavigate();
     const {
@@ -95,7 +100,7 @@ export default function Team() {
                         </Box>
                     </Box>
                     <Box className="follow">
-                        <MemberOnly role={role}>
+                        <UserOnly role={role}>
                             <Button
                                 variant={isFollowing ? 'outlined' : 'contained'}
                                 color="primary"
@@ -105,7 +110,7 @@ export default function Team() {
                             >
                                 {isFollowing ? 'Đang theo dõi' : 'Theo dõi'}
                             </Button>
-                        </MemberOnly>
+                        </UserOnly>
                         <MemberOnly role={role}>
                             <Button
                                 variant="contained"

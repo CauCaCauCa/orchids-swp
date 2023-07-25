@@ -1,8 +1,8 @@
 const { ObjectId } = require('mongodb');
-const { connect } = require('../configs/MongoDB');
+const { connect, getTeamsCollection } = require('../configs/MongoDB');
 const Notification = require('../modules/notification.module');
 const { getAccountInfoByEmail } = require('./account.services');
-const { getTeam } = require('./team.services');
+const TeamServices = require('./team.services');
 
 // Create notification for user personl when thier posts are commented or their questions are answered
 async function createNotificationToPersonal(from, Id, type) {
@@ -11,10 +11,13 @@ async function createNotificationToPersonal(from, Id, type) {
     var notification = await Notification({
         from: from,
         type: type,
-        id: Id,
+        id: Id
     });
     if (notification.from !== notification.to) {
-        const { collection, close } = await connect('orchids-1', 'notification');
+        const { collection, close } = await connect(
+            'orchids-1',
+            'notification'
+        );
         const result = await collection.insertOne(notification);
         close();
         return result;
@@ -24,12 +27,14 @@ async function createNotificationToPersonal(from, Id, type) {
 // create notification for followers when user post
 async function createNotificationToFollowers(from, Id, type) {
     const { collection, close } = await connect('orchids-1', 'notification');
+    const { collection: collection2, close: close2 } = await getTeamsCollection();
     // from : email of user who post
     // postId : id of post
     var listTo = [];
     if (from.includes('@orchids')) {
-        var result = await getTeam(from).ListEmailFollower;
-        listTo = result.ListEmailFollower;
+        var result = await collection2.find({ email: from }).toArray();
+        listTo = result[0].ListEmailFollower;
+        close2();
     } else {
         var result = await getAccountInfoByEmail(from);
         listTo = result.ListEmailFollower;
@@ -42,7 +47,7 @@ async function createNotificationToFollowers(from, Id, type) {
             type: type,
             id: Id,
             date: Date.now(),
-            hasSeen: false,
+            hasSeen: false
         };
         if (notification.from !== notification.to) {
             await collection.insertOne(notification);
@@ -62,7 +67,10 @@ async function getNotifications(email) {
 // set hasSeen = true
 async function setHasSeen(id) {
     const { collection, close } = await connect('orchids-1', 'notification');
-    const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: { hasSeen: true } });
+    const result = await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { hasSeen: true } }
+    );
     close();
     return result;
 }
@@ -82,16 +90,18 @@ async function createNotificationToTeam(from, to, type) {
     var notification = await Notification({
         from: from,
         to: to,
-        type: type,
+        type: type
     });
     if (notification.from !== notification.to) {
-        const { collection, close } = await connect('orchids-1', 'notification');
+        const { collection, close } = await connect(
+            'orchids-1',
+            'notification'
+        );
         const result = await collection.insertOne(notification);
         close();
         return result;
     }
 }
-
 
 module.exports = {
     createNotificationToPersonal,
@@ -99,9 +109,8 @@ module.exports = {
     setHasSeen,
     deleteNotification,
     createNotificationToFollowers,
-    createNotificationToTeam,
-}
-
+    createNotificationToTeam
+};
 
 // // !test
 // async  function test() {

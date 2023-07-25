@@ -11,8 +11,8 @@ export default function ConfirmContextProvider({ children }) {
     const [confirmRunner, setConfirmRunner] = useState(() => () => { });
 
     function handleConfirm() {
-        confirmRunner();
         setOpen(false);
+        confirmRunner();
     }
 
     function openConfirm(title, confirmRunner) {

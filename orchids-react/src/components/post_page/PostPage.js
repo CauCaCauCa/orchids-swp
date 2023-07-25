@@ -175,14 +175,25 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                                 isAllowedEdits) && (
                                 <button
                                     style={{ marginLeft: '2rem' }}
-                                    onClick={() =>
-                                        openConfirm(
-                                            'Bạn muốn chỉnh sửa bài viết này?',
-                                            () =>
+                                    onClick={
+                                        () => {
+                                            if (
+                                                window.confirm(
+                                                    'Bạn muốn chỉnh sửa bài viết này?'
+                                                )
+                                            ) {
                                                 navigate(
                                                     `/edit-post?id=${post._id}`
-                                                )
-                                        )
+                                                );
+                                            }
+                                        }
+                                        // openConfirm(
+                                        //     'Bạn muốn chỉnh sửa bài viết này?',
+                                        //     () =>
+                                        //         navigate(
+                                        //             `/edit-post?id=${post._id}`
+                                        //         )
+                                        // )
                                     }
                                 >
                                     <i className="fa-solid fa-pen-to-square"></i>
