@@ -24,7 +24,8 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
 
     const { openConfirm } = useContext(ConfirmContext);
 
-    const { showSuccess, showError } = useContext(NotificationContext);
+    const { showSuccess, showError, showInfo } =
+        useContext(NotificationContext);
 
     const navigate = useNavigate();
 
@@ -69,6 +70,10 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
     }, []);
 
     function like() {
+        if (localStorage.getItem('email') == null) {
+            showInfo('Bạn cần đăng nhập để thực hiện chức năng này.');
+            return;
+        }
         if (isLiked == false) {
             setIsLiked(true);
             LikePost(post._id).then((res) => {
@@ -122,6 +127,19 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                 showError('unlike fail');
             }
         });
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                console.log('Text copied to clipboard');
+                showSuccess('Copy thành công.');
+            })
+            .catch((error) => {
+                console.error('Failed to copy text to clipboard:', error);
+                showError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+            });
     }
 
     return (
@@ -391,19 +409,6 @@ function Waiting() {
             />
         </div>
     );
-}
-
-function copyToClipboard(text) {
-    navigator.clipboard
-        .writeText(text)
-        .then(() => {
-            console.log('Text copied to clipboard');
-            // You can show a success message or perform any additional actions here
-        })
-        .catch((error) => {
-            console.error('Failed to copy text to clipboard:', error);
-            // You can show an error message or handle the error as needed
-        });
 }
 
 function FormatDate(date) {

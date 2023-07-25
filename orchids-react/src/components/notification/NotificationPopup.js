@@ -153,12 +153,14 @@ export default function NotificationPopup({ children }) {
                                                 if (
                                                     item.type === 'comment' ||
                                                     item.type ===
-                                                    'has a new post'
+                                                        'has a new post'
                                                 ) {
                                                     navigate(
                                                         `/post-page?id=${item.id}`
                                                     );
-                                                } else if(item.type === 'answer') {
+                                                } else if (
+                                                    item.type === 'answer'
+                                                ) {
                                                     navigate(
                                                         `/question-page?id=${item.id}`
                                                     );
@@ -170,15 +172,20 @@ export default function NotificationPopup({ children }) {
                                             }}
                                         >
                                             <p>
-                                                {
-                                                    item.type === 'comment' ?
-                                                        <>Someone {item.type} your post</>
-                                                        :
-                                                        item.type === 'has a new post' ?
-                                                            <>Someone {item.type}</>
-                                                            :
-                                                            <>Someone {item.type} your question</>
-                                                }
+                                                {item.type === 'comment' ? (
+                                                    <>
+                                                        Someone {item.type} your
+                                                        post
+                                                    </>
+                                                ) : item.type ===
+                                                  'has a new post' ? (
+                                                    <>Someone {item.type}</>
+                                                ) : (
+                                                    <>
+                                                        Someone {item.type} your
+                                                        question
+                                                    </>
+                                                )}
                                                 <div
                                                     style={{
                                                         borderRadius: '50%',

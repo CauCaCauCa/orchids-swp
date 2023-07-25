@@ -64,8 +64,8 @@ export default function Team() {
 
     const handleLeaveTeam = () => {
         actions.leave();
-        navigate('/')
-    }
+        navigate('/');
+    };
 
     if (isLoading) return <TeamSkeleton />;
     if (!currentTeam) navigate('/404');
@@ -95,21 +95,28 @@ export default function Team() {
                         </Box>
                     </Box>
                     <Box className="follow">
-                        <Button
-                            variant={isFollowing ? 'outlined' : 'contained'}
-                            color="primary"
-                            size="large"
-                            className="follow-btn"
-                            onClick={handleFollow}
-                        >
-                            {isFollowing ? 'Đang theo dõi' : 'Theo dõi'}
-                        </Button>
+                        <MemberOnly role={role}>
+                            <Button
+                                variant={isFollowing ? 'outlined' : 'contained'}
+                                color="primary"
+                                size="large"
+                                className="follow-btn"
+                                onClick={handleFollow}
+                            >
+                                {isFollowing ? 'Đang theo dõi' : 'Theo dõi'}
+                            </Button>
+                        </MemberOnly>
                         <MemberOnly role={role}>
                             <Button
                                 variant="contained"
                                 size="large"
                                 color="error"
-                                onClick={() => openConfirm('Are you sure you want to leave the team?', () => handleLeaveTeam())}
+                                onClick={() =>
+                                    openConfirm(
+                                        'Are you sure you want to leave the team?',
+                                        () => handleLeaveTeam()
+                                    )
+                                }
                             >
                                 Leave team
                             </Button>
