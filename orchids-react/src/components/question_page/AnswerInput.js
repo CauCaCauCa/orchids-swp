@@ -10,6 +10,11 @@ export default function AnswerInput({ questionID, qcard, changeIsAnswerLoad }) {
         useContext(NotificationContext);
 
     const handleCommentSubmit = () => {
+        if (localStorage.getItem('email') === null) {
+            showInfo('Bạn cần đăng nhập để bình luận!');
+            return;
+        }
+
         if (commentText !== '') {
             var date = Date.now();
             AnswerQuestion(questionID, commentText, date).then((res) => {

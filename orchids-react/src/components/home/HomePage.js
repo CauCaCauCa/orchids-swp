@@ -78,7 +78,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
     }
     function CardMini({ team }) {
         return (
-            <Box className='card-mini' onClick={() => navigate(`/team/${team.email}`)}>
+            <Box className='card-mini' onClick={() => navigate(`/teams/${team.email}`)}>
                 <Box component="img" src={team.avatar} alt="avatar" sx={{ width: "50px", height: "50px" }} />
             </Box>
         )
