@@ -33,7 +33,7 @@ function WriterOnly({ children, role }) {
 }
 
 function MemberOnly({ children, role }) {
-    if (role === 'admin' || role === 'writer') return children;
+    if (localStorage.getItem('email') && (role === 'admin' || role === 'writer')) return children;
     return null;
 }
 

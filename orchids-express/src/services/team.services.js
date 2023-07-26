@@ -9,6 +9,7 @@ const { Post } = require('../modules/post.module');
 const AccountService = require('./account.services');
 const PostService = require('./post.services');
 const { TeamMember } = require('../modules/team.module');
+const { ObjectId } = require('mongodb');
 
 async function getTeam(teamEmail, projection = {}) {
     const { collection, close } = await getTeamsCollection();
@@ -476,16 +477,18 @@ async function deleteTeam(teamEmail) {
 }
 
 async function deleteTeamPost(postId, teamEmail, callerEmail) {
-    console.log(postId, teamEmail, callerEmail);
+    const { collection, close } = await getTeamsCollection();
 
     if (!isMember(teamEmail, callerEmail) || !isOwner(teamEmail, callerEmail)) {
         throw new Error('You are not the creator of this post');
     }
 
     // delete post
-    await PostService.DeletePost(postId, teamEmail);
+    await collection.deleteOne({
+        _id: new ObjectId(postId),
+        emailCreator: teamEmail
+    });
 
-    const { collection, close } = await getTeamsCollection();
     // subtract number of posts from team
     const response = collection.updateOne(
         { email: teamEmail },
@@ -494,6 +497,29 @@ async function deleteTeamPost(postId, teamEmail, callerEmail) {
 
     close();
     return response;
+}
+
+async function getTopTeams(count) {
+    const { collection, close } = await getTeamsCollection();
+    const limit = Number(count);
+    const result = await collection
+        .aggregate([
+            {
+                $addFields: {
+                    listSize: { $size: '$ListEmailFollower' }
+                }
+            },
+            {
+                $sort: { listSize: -1 }
+            },
+            {
+                $limit: limit
+            }
+        ])
+        .toArray();
+
+    close();
+    return result;
 }
 
 module.exports = {
@@ -518,7 +544,8 @@ module.exports = {
     getListInfoTeamByEmails,
     followTeam: toggleFollowTeam,
     leaveTeam,
-    deleteTeamPost
+    deleteTeamPost,
+    getTopTeams
 };
 
 // // !test

@@ -7,10 +7,10 @@ const useOnline = false;
 
 function getURI() {
     if(useOnline) {
-        console.log("##### Using online database");
+        // console.log("##### Using online database");
         return ONLINE;
     } else {
-        console.log("##### Using local database");
+        // console.log("##### Using local database");
         return LOCAL;
     }
 }
