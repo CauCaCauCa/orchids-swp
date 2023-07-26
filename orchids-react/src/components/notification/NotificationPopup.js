@@ -196,6 +196,12 @@ export default function NotificationPopup({ children }) {
                                                               Someone{' '}
                                                               {item.type}
                                                           </>
+                                                      ) : item.type ===
+                                                        'teamMember' ? (
+                                                          <>
+                                                              You have been
+                                                              added to a team
+                                                          </>
                                                       ) : (
                                                           <>
                                                               Someone{' '}

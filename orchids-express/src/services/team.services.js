@@ -161,6 +161,13 @@ async function addMember(teamEmail, memberEmail, role) {
     AccountService.addEmailToTeamAttendList(memberEmail, teamEmail);
     close();
 
+    await notifyAccountAddToTeamMember(
+        teamEmail,
+        memberEmail,
+        teamEmail,
+        'teamMember'
+    );
+
     return result;
 }
 
@@ -478,7 +485,8 @@ async function deleteTeam(teamEmail) {
 
 async function deleteTeamPost(postId, teamEmail, callerEmail) {
     const { collection, close } = await getTeamsCollection();
-    const { collection: postCollection, close: closePost } = await getPostsCollection();
+    const { collection: postCollection, close: closePost } =
+        await getPostsCollection();
     if (!isMember(teamEmail, callerEmail) || !isOwner(teamEmail, callerEmail)) {
         throw new Error('You are not the creator of this post');
     }
@@ -592,4 +600,22 @@ async function deleteAllPostsByTeam(teamEmail) {
     const result = await collection.deleteMany({ emailCreator: teamEmail });
     close();
     return result;
+}
+
+async function notifyAccountAddToTeamMember(from, to, Id, type) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+
+    var notification = {
+        from: from,
+        to: to,
+        type: type,
+        id: Id,
+        date: Date.now(),
+        hasSeen: false
+    };
+    if (notification.from !== notification.to) {
+        await collection.insertOne(notification);
+    }
+
+    close();
 }
