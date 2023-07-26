@@ -6,7 +6,6 @@ import { DeletePost, GetPostInfo, UpdatePost } from '../../api/postAPI';
 import Login from '../personal/Login';
 import { NotificationContext } from '../../context/NotificationContext';
 import { ConfirmContext } from '../../context/ConfirmContext';
-import { el } from 'date-fns/locale';
 import { deleteTeamPost } from '../../api/teamAPI';
 
 export default function UpdatePostPage() {
