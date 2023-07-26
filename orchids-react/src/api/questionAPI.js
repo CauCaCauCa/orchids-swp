@@ -114,6 +114,9 @@ export async function DeleteAnswer(questionID, createDate) {
 export async function LikeAnswer(questionID, emailCreator, createDate) {
     if (!localStorage.getItem('token')) {
         alert('Bạn chưa đăng nhập!');
+        return {
+            acknowledged: false
+        }
     } else {
         return fetchAPI({
             method: 'POST',
