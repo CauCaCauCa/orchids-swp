@@ -76,6 +76,8 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
                     }
                 });
             });
+            changeIsAnswerLoad();
+            
         });
 
         // Restore scroll bar when the component is unmounted
@@ -217,50 +219,55 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
                     </AccordionDetails>
                 </Accordion>
                 <h4>Câu trả lời ({qcard.answers.length})</h4>
-                {qcard.answers.reverse().map((answer, index) => {
-                    return (
-                        <div key={index} style={{ padding: '0 5%', border: '1px gray solid', marginBottom: '.5rem', borderRadius: '.2rem' }}>
-                            <p style={{ color: 'gray' }}>
-                                <Avatar src={answer.avatar} sx={{ width: 30, height: 30, display: 'inline-block', position: 'relative', top: '.7rem' }} />
-                                <b> @{answer.username}</b> - {FormatDate(answer.createDate)}
-                                {!answer.likes.includes(localStorage.getItem('email')) ?
-                                    <i className="fa-regular fa-heart fa-lg"
-                                        onClick={() => likeAnswer(qcard._id, answer.emailCreator, answer.createDate)}
-                                        style={{
-                                            color: 'black',
-                                            marginLeft: '1rem',
-                                            cursor: 'pointer',
-                                        }}>
-                                    </i>
-                                    :
-                                    <i className="fa-solid fa-heart fa-lg"
-                                        onClick={() => unlikeAnswer(qcard._id, answer.emailCreator, answer.createDate)}
-                                        style={{
-                                            color: 'red',
-                                            marginLeft: '1rem',
-                                            cursor: 'pointer',
-                                        }}
-                                    ></i>
-                                }
-                                <span>{" " + answer.likes.length}</span>
-                                {
-                                    answer.emailCreator === localStorage.getItem('email') &&
-                                    <span style={{ position: 'absolute', right: '3rem', cursor: 'pointer' }}>
-                                        <i className="fa-solid fa-pen-to-square fa-md" style={{ color: 'black' }}></i>
-                                        <i class="fa-solid fa-trash" style={{ color: 'red', marginLeft: '1rem' }}
-                                            onClick={() => deleteAnswer(qcard._id, answer.createDate)}
-                                        ></i>
-                                    </span>
-                                }
-                            </p>
-                            <div>
-                            </div>
-                            <div id="content" dangerouslySetInnerHTML={{ __html: answer.content }}
-                                style={{ marginBottom: '1rem', marginLeft: '1rem', wordWrap: 'break-word' }}
-                            ></div>
-                        </div>
-                    );
-                })
+                {
+                    qcard.answers[0].username &&
+                    <>
+                        {qcard.answers.reverse().map((answer, index) => {
+                            return (
+                                <div key={index} style={{ padding: '0 5%', border: '1px gray solid', marginBottom: '.5rem', borderRadius: '.2rem' }}>
+                                    <p style={{ color: 'gray' }}>
+                                        <Avatar src={answer.avatar} sx={{ width: 30, height: 30, display: 'inline-block', position: 'relative', top: '.7rem' }} />
+                                        <b> @{answer.username}</b> - {FormatDate(answer.createDate)}
+                                        {!answer.likes.includes(localStorage.getItem('email')) ?
+                                            <i className="fa-regular fa-heart fa-lg"
+                                                onClick={() => likeAnswer(qcard._id, answer.emailCreator, answer.createDate)}
+                                                style={{
+                                                    color: 'black',
+                                                    marginLeft: '1rem',
+                                                    cursor: 'pointer',
+                                                }}>
+                                            </i>
+                                            :
+                                            <i className="fa-solid fa-heart fa-lg"
+                                                onClick={() => unlikeAnswer(qcard._id, answer.emailCreator, answer.createDate)}
+                                                style={{
+                                                    color: 'red',
+                                                    marginLeft: '1rem',
+                                                    cursor: 'pointer',
+                                                }}
+                                            ></i>
+                                        }
+                                        <span>{" " + answer.likes.length}</span>
+                                        {
+                                            answer.emailCreator === localStorage.getItem('email') &&
+                                            <span style={{ position: 'absolute', right: '3rem', cursor: 'pointer' }}>
+                                                <i className="fa-solid fa-pen-to-square fa-md" style={{ color: 'black' }}></i>
+                                                <i class="fa-solid fa-trash" style={{ color: 'red', marginLeft: '1rem' }}
+                                                    onClick={() => deleteAnswer(qcard._id, answer.createDate)}
+                                                ></i>
+                                            </span>
+                                        }
+                                    </p>
+                                    <div>
+                                    </div>
+                                    <div id="content" dangerouslySetInnerHTML={{ __html: answer.content }}
+                                        style={{ marginBottom: '1rem', marginLeft: '1rem', wordWrap: 'break-word' }}
+                                    ></div>
+                                </div>
+                            );
+                        })
+                        }
+                    </>
                 }
             </div>
         </div >
