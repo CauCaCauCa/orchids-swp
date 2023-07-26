@@ -34,6 +34,10 @@ export default function Donate() {
 
     const handleData = (data) => {
         // console.log('data: ', data);
+        // sort by vnd
+        data.sort((a, b) => {
+            return parseInt(b.vnd) - parseInt(a.vnd);
+        });
         setContributors(data);
     };
 
