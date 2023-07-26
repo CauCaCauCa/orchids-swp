@@ -8,19 +8,14 @@ import { NotificationContext } from '../../context/NotificationContext';
 import { ConfirmContext } from '../../context/ConfirmContext';
 
 export default function UpdatePostPage() {
+    const [isLogin, setIsLogin] = React.useState(
+        localStorage.getItem('token') ? true : false
+    );
 
-    const [isLogin, setIsLogin] = React.useState(localStorage.getItem('token') ? true : false);
-
-    return (
-        <>
-            {isLogin ? <EditPost /> : <Login setIsLogin={setIsLogin} />}
-        </>
-    )
-
+    return <>{isLogin ? <EditPost /> : <Login setIsLogin={setIsLogin} />}</>;
 }
 
 function EditPost() {
-
     const { showError, showSuccess } = useContext(NotificationContext);
     const { openConfirm } = useContext(ConfirmContext);
 
@@ -38,7 +33,7 @@ function EditPost() {
         if (editorRef.current) {
             quillRef.current = new Quill(editorRef.current, {
                 theme: 'snow',
-                placeholder: 'Enter your text...',
+                placeholder: 'Enter your text...'
             });
             quillRef.current.on('text-change', () => {
                 setContent(quillRef.current.root.innerHTML);
@@ -49,7 +44,7 @@ function EditPost() {
         const postId = urlParams.get('id');
         setPostId(postId);
         if (postId) {
-            GetPostInfo(postId).then(res => {
+            GetPostInfo(postId).then((res) => {
                 setTitle(res.title);
                 setContent(res.content);
                 setPreviewUrl(res.bground);
@@ -57,7 +52,6 @@ function EditPost() {
             });
         }
     }, []);
-
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -88,13 +82,17 @@ function EditPost() {
 
         if (previewUrl !== '') {
             if (title !== '' && content !== '') {
-                UpdatePost(postId, title, content, previewUrl).then(res => {
+                UpdatePost(postId, title, content, previewUrl).then((res) => {
                     console.log(res);
-                    if (res.acknowledged === true && res.modifiedCount === 1 && res.matchedCount === 1) {
-                        showSuccess("Post updated successfully.")
+                    if (
+                        res.acknowledged === true &&
+                        res.modifiedCount === 1 &&
+                        res.matchedCount === 1
+                    ) {
+                        showSuccess('Post updated successfully.');
                         navigate('/personal');
                     } else {
-                        showError("Failed to update post.")
+                        showError('Failed to update post.');
                     }
                 });
             } else {
@@ -106,35 +104,69 @@ function EditPost() {
     };
 
     const handleDelete = () => {
+        
         openConfirm('Are you sure you want to delete this post?', () => {
-            DeletePost(postId).then(res => {
+            DeletePost(postId).then((res) => {
                 console.log(res);
                 if (res.acknowledged === true && res.deletedCount === 1) {
-                    showSuccess('Post deleted successfully.')
+                    showSuccess('Post deleted successfully.');
                     navigate('/personal');
                 } else {
-                    showError('Failed to delete post.')
+                    showError('Failed to delete post.');
                 }
             });
-        })
+        });
     };
 
     return (
-        <div id='create-post-page'>
+        <div id="create-post-page">
             {previewUrl && (
-                <img src={previewUrl} alt='Preview' style={{ width: '100%', height: '20rem', objectFit: 'cover' }} />
+                <img
+                    src={previewUrl}
+                    alt="Preview"
+                    style={{
+                        width: '100%',
+                        height: '20rem',
+                        objectFit: 'cover'
+                    }}
+                />
             )}
-            <input type='file' onChange={handleFileChange} />
-            <br /><br />
-            <br /><br />
-            <input type='text' placeholder='Nhập tiêu đề' maxLength={100} value={title} onChange={handleTitleChange} />
-            <br /><br />
+            <input type="file" onChange={handleFileChange} />
+            <br />
+            <br />
+            <br />
+            <br />
+            <input
+                type="text"
+                placeholder="Nhập tiêu đề"
+                maxLength={100}
+                value={title}
+                onChange={handleTitleChange}
+            />
+            <br />
+            <br />
             <div ref={editorRef} />
-            <br /><br />
+            <br />
+            <br />
             <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
-                <button className='btn' style={{ marginLeft: '85%' }} onClick={handleSave}>Save</button>
-                <button className='btn' style={{ marginLeft: '0', backgroundColor: 'red', color: 'white' }}
-                    onClick={handleDelete}>Delete</button>
+                <button
+                    className="btn"
+                    style={{ marginLeft: '85%' }}
+                    onClick={handleSave}
+                >
+                    Save
+                </button>
+                <button
+                    className="btn"
+                    style={{
+                        marginLeft: '0',
+                        backgroundColor: 'red',
+                        color: 'white'
+                    }}
+                    onClick={handleDelete}
+                >
+                    Delete
+                </button>
             </div>
         </div>
     );

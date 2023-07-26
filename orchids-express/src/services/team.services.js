@@ -8,6 +8,7 @@ const { Post } = require('../modules/post.module');
 const AccountService = require('./account.services');
 const PostService = require('./post.services');
 const { TeamMember } = require('../modules/team.module');
+const NotificationService = require('./notification.services');
 
 async function getTeam(teamEmail, projection = {}) {
     const { collection, close } = await getTeamsCollection();
@@ -297,8 +298,16 @@ async function createTeamPost(title, content, bground, teamEmail) {
         { $inc: { NumberPost: 1 } }
     );
 
-    clostTeam();
     closePost();
+    // NOTIFY FOLLOWERS
+    const team = await getTeam(teamEmail);
+    clostTeam();
+    await NotificationService.createNotificationToFollowers(
+        team.email,
+        result.insertedId,
+        'has a new post'
+    );
+
 
     return response[0];
 }
@@ -370,7 +379,8 @@ async function getListInfoTeamByEmails(listEmails) {
 
 async function toggleFollowTeam(followerEmail, teamEmail) {
     const { collection, close } = await getTeamsCollection();
-    const { collection: accountCollection, close: closeAccountCollection } = await getAccountsCollection();
+    const { collection: accountCollection, close: closeAccountCollection } =
+        await getAccountsCollection();
     const team = await getTeam(teamEmail);
     if (!team) {
         throw new Error(`Team ${teamEmail} does not exist`);
@@ -386,7 +396,7 @@ async function toggleFollowTeam(followerEmail, teamEmail) {
         await accountCollection.updateOne(
             { email: followerEmail },
             { $pull: { ListEmailFollowing: teamEmail } }
-        )
+        );
     } else {
         result = await collection.updateOne(
             { email: teamEmail },
@@ -395,7 +405,7 @@ async function toggleFollowTeam(followerEmail, teamEmail) {
         await accountCollection.updateOne(
             { email: followerEmail },
             { $push: { ListEmailFollowing: teamEmail } }
-        )
+        );
     }
     close();
     return {
@@ -431,16 +441,22 @@ async function deleteTeam(teamEmail) {
     const team = (await collection.find({ email: teamEmail }).toArray())[0];
 
     const members = team.ListEmailMember;
-    var count = 0
+    var count = 0;
     members.forEach(async (member) => {
-        await AccountService.removeEmailFromTeamAttendList(member.email, teamEmail);
+        await AccountService.removeEmailFromTeamAttendList(
+            member.email,
+            teamEmail
+        );
         count++;
-    })
+    });
 
     console.log(count);
 
     const owner = team.EmailOwner;
-    const teamOwnerResponse = await AccountService.removeEmailFromTeamOwnerList(owner, teamEmail);
+    const teamOwnerResponse = await AccountService.removeEmailFromTeamOwnerList(
+        owner,
+        teamEmail
+    );
     console.log(teamOwnerResponse);
 
     const followers = team.ListEmailFollower;
@@ -448,7 +464,7 @@ async function deleteTeam(teamEmail) {
     await followers.forEach(async (follower) => {
         await AccountService.removeEmailFromFollowingList(follower, teamEmail);
         count++;
-    })
+    });
     console.log(count);
 
     const postResponse = await PostService.deleteAllPostsByTeam(teamEmail);
@@ -458,6 +474,10 @@ async function deleteTeam(teamEmail) {
 
     close();
     return response;
+}
+
+function deleteTeamPost(postId, teamId) {
+    
 }
 
 module.exports = {
