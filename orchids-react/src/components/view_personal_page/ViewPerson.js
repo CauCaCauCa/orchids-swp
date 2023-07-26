@@ -129,21 +129,25 @@ export default function ViewPersonal() {
             }
 
             function handleFollow() {
-                if (dataCur.ListEmailFollower?.includes(localStorage.getItem('email'))) {
-                    // remove email in list follower
-                    var newList = dataCur.ListEmailFollower.filter(email => email !== localStorage.getItem('email'));
-                    setDataCur({ ...dataCur, ListEmailFollower: newList });
-                    UnfollowUser(dataCur.email).then(res => {
-                        showSuccess('Bỏ theo dõi thành công');
-                    });
+                if (localStorage.getItem('token')) {
+                    if (dataCur.ListEmailFollower?.includes(localStorage.getItem('email'))) {
+                        // remove email in list follower
+                        var newList = dataCur.ListEmailFollower.filter(email => email !== localStorage.getItem('email'));
+                        setDataCur({ ...dataCur, ListEmailFollower: newList });
+                        UnfollowUser(dataCur.email).then(res => {
+                            showSuccess('Bỏ theo dõi thành công');
+                        });
 
-                } else {
-                    // add email in list follower
-                    var newList = [...dataCur.ListEmailFollower, localStorage.getItem('email')];
-                    setDataCur({ ...dataCur, ListEmailFollower: newList });
-                    FollowUser(dataCur.email).then(res => {
-                        showSuccess('Theo dõi thành công');
-                    });
+                    } else {
+                        // add email in list follower
+                        var newList = [...dataCur.ListEmailFollower, localStorage.getItem('email')];
+                        setDataCur({ ...dataCur, ListEmailFollower: newList });
+                        FollowUser(dataCur.email).then(res => {
+                            showSuccess('Theo dõi thành công');
+                        });
+                    }
+                } else{
+                    showInfo('Bạn cần đăng nhập để thực hiện chức năng này');
                 }
             }
 

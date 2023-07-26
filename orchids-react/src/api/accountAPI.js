@@ -10,6 +10,7 @@ export async function GetPersonalInfo(username) {
         uri: '/account/get-account-info-by-username?username=' + username,
     });
 }
+
 // TODO: Get post list by username.
 export async function GetPostList(username) {
     return fetchAPI({
