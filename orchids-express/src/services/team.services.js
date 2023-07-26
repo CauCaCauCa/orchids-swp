@@ -467,7 +467,7 @@ async function deleteTeam(teamEmail) {
     });
     console.log(count);
 
-    const postResponse = await PostService.deleteAllPostsByTeam(teamEmail);
+    const postResponse = await deleteAllPostsByTeam(teamEmail);
     console.log(postResponse);
 
     const response = await collection.deleteOne({ email: teamEmail });
@@ -585,4 +585,11 @@ async function createNotificationToFollowers(from, Id, type) {
         }
     }
     close();
+}
+
+async function deleteAllPostsByTeam(teamEmail) {
+    const { collection, close } = await getPostsCollection();
+    const result = await collection.deleteMany({ emailCreator: teamEmail });
+    close();
+    return result;
 }

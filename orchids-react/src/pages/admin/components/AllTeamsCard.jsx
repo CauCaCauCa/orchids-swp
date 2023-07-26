@@ -81,17 +81,6 @@ export default function AllTeamsCard() {
     <Paper component="section" variant="outlined" sx={{p: 4}}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <h3>All Teams</h3>
-        <ToggleButtonGroup
-          color="primary"
-          exclusive
-          value={currentFilter}
-          onChange={handleMainFilter}
-        >
-          <ToggleButton value="all">
-            <WidgetsOutlinedIcon />
-          </ToggleButton>
-          <ToggleButton value="deactivated">Hi</ToggleButton>
-        </ToggleButtonGroup>
       </Box>
       <CustomTablePaginated listOfObjects={teams} numberOfObjects={totalTeams} Actions={Actions} columns={columns} isLoading={isLoading} changePage={changePage} />
     </Paper>

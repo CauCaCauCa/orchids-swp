@@ -178,6 +178,7 @@ export default function TeamHomepageContextProvider({ children }) {
 
     async function deleteTeamAll() {
         const response = await deleteTeam(team.email);
+        console.log(response);
         if(response) {
             showSuccess('Xóa nhóm thành công!');
         } else {
