@@ -1,6 +1,7 @@
 import {
     Box,
     CircularProgress,
+    CssBaseline,
     Dialog,
     DialogContent,
     Divider,
@@ -17,7 +18,6 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { useNavigate } from 'react-router-dom';
 
 export default function useSearch() {
-
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
@@ -104,7 +104,7 @@ export default function useSearch() {
     function goto(type, id) {
         switch (type) {
             case 'account': {
-                navigate(`/view/user?username=${id}`)
+                navigate(`/view/user?username=${id}`);
                 break;
             }
             case 'post': {
@@ -116,155 +116,165 @@ export default function useSearch() {
                 break;
             }
             case 'question': {
-                navigate(`/question-page?id=${id}`)
+                navigate(`/question-page?id=${id}`);
                 break;
             }
             default: {
-                navigate("/");
+                navigate('/');
             }
         }
     }
 
     function getComponent() {
         return (
-            <Dialog
-                open={open}
-                onClose={() => setOpen(false)}
-                fullWidth
-                sx={{
-                    '& .MuiDialog-container': {
-                        alignItems: 'flex-start'
-                    },
-                    '& .MuiDialog-paper': {
-                        borderRadius: 4
-                    }
-                }}
-            >
-                <DialogContent>
-                    <Box
-                        sx={{
-                            position: 'relative'
-                        }}
-                    >
-                        <input
-                            placeholder="Type to start searching"
-                            style={{
-                                border: 'none',
-                                outline: 'none',
-                                fontSize: '1rem',
-                                width: '100%'
-                            }}
-                            onChange={handleChange}
-                        />
-                        <SearchIcon
+            <Box>
+                <CssBaseline />
+                <Dialog
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    fullWidth
+                    sx={{
+                        '& .MuiDialog-container': {
+                            alignItems: 'flex-start'
+                        },
+                        '& .MuiDialog-paper': {
+                            borderRadius: 4
+                        }
+                    }}
+                >
+                    <DialogContent>
+                        <Box
                             sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                right: '1rem',
-                                transform: 'translateY(-50%)'
+                                position: 'relative'
                             }}
-                        />
-                    </Box>
-                    {searchTerm && (
-                        <Box mt={2}>
-                            {loading ? (
-                                <>
-                                    <Divider />
-                                    <CircularProgress />
-                                </>
-                            ) : noneFound ? (
-                                <Box>None found</Box>
-                            ) : (
-                                <>
-                                    <Typography variant="caption">
-                                        Found {lengthFound} result
-                                        {lengthFound === 1 ? '' : 's'}
-                                    </Typography>
-                                    {orderedResults.map((resultList) =>
-                                        resultList.map((result) => (
-                                            <Paper
-                                                key={result.id}
-                                                sx={{
-                                                    p: 1,
-                                                    mt: 1,
-                                                    height: '70px'
-                                                }}
-                                                onClick={() => goto(result.type, result.id)}
-                                            >
-                                                <Box
-                                                    display="flex"
-                                                    height="100%"
-                                                    alignItems="center"
-                                                    gap={2}
-                                                >
-                                                    {result.image ? (
-                                                        <IconImage
-                                                            src={result.image}
-                                                            sx={{
-                                                                height: '100%',
-                                                                objectFit:
-                                                                    'cover',
-                                                                borderRadius: 1
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        (result.type ===
-                                                            'post' && (
-                                                            <FeedIcon
-                                                                sx={{
-                                                                    height: '100%',
-                                                                    width: '55px',
-                                                                    bgcolor:
-                                                                        'rgb(232, 232, 232)',
-                                                                    p: 1.5,
-                                                                    borderRadius: 1,
-                                                                    color: 'rgb(0, 195, 255)'
-                                                                }}
-                                                            />
-                                                        )) ||
-                                                        (result.type ===
-                                                            'question' && (
-                                                            <QuestionMarkIcon
-                                                                sx={{
-                                                                    height: '100%',
-                                                                    width: '55px',
-                                                                    bgcolor:
-                                                                        'rgb(232, 232, 232)',
-                                                                    p: 1.5,
-                                                                    borderRadius: 1,
-                                                                    color: 'rgb(91, 244, 26)'
-                                                                }}
-                                                            />
-                                                        ))
-                                                    )}
-                                                    <Grid item xs={10}>
-                                                        <Typography variant="caption">
-                                                            {result.type}{' '}
-                                                            {result.emailCreator && (
-                                                                <span>
-                                                                    by{' '}
-                                                                    <strong>
-                                                                        {
-                                                                            result.emailCreator
-                                                                        }
-                                                                    </strong>
-                                                                </span>
-                                                            )}
-                                                        </Typography>
-                                                        <Typography variant="body1">
-                                                            {result.title}
-                                                        </Typography>
-                                                    </Grid>
-                                                </Box>
-                                            </Paper>
-                                        ))
-                                    )}
-                                </>
-                            )}
+                        >
+                            <input
+                                placeholder="Type to start searching"
+                                style={{
+                                    border: 'none',
+                                    outline: 'none',
+                                    fontSize: '1rem',
+                                    width: '100%'
+                                }}
+                                onChange={handleChange}
+                            />
+                            <SearchIcon
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '1rem',
+                                    transform: 'translateY(-50%)'
+                                }}
+                            />
                         </Box>
-                    )}
-                </DialogContent>
-            </Dialog>
+                        {searchTerm && (
+                            <Box mt={2}>
+                                {loading ? (
+                                    <>
+                                        <Divider />
+                                        <CircularProgress />
+                                    </>
+                                ) : noneFound ? (
+                                    <Box>None found</Box>
+                                ) : (
+                                    <>
+                                        <Typography variant="caption">
+                                            Found {lengthFound} result
+                                            {lengthFound === 1 ? '' : 's'}
+                                        </Typography>
+                                        {orderedResults.map((resultList) =>
+                                            resultList.map((result) => (
+                                                <Paper
+                                                    key={result.id}
+                                                    sx={{
+                                                        p: 1,
+                                                        mt: 1,
+                                                        height: '70px'
+                                                    }}
+                                                    onClick={() =>
+                                                        goto(
+                                                            result.type,
+                                                            result.id
+                                                        )
+                                                    }
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        height="100%"
+                                                        alignItems="center"
+                                                        gap={2}
+                                                    >
+                                                        {result.image ? (
+                                                            <IconImage
+                                                                src={
+                                                                    result.image
+                                                                }
+                                                                sx={{
+                                                                    height: '100%',
+                                                                    objectFit:
+                                                                        'cover',
+                                                                    borderRadius: 1
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            (result.type ===
+                                                                'post' && (
+                                                                <FeedIcon
+                                                                    sx={{
+                                                                        height: '100%',
+                                                                        width: '55px',
+                                                                        bgcolor:
+                                                                            'rgb(232, 232, 232)',
+                                                                        p: 1.5,
+                                                                        borderRadius: 1,
+                                                                        color: 'rgb(0, 195, 255)'
+                                                                    }}
+                                                                />
+                                                            )) ||
+                                                            (result.type ===
+                                                                'question' && (
+                                                                <QuestionMarkIcon
+                                                                    sx={{
+                                                                        height: '100%',
+                                                                        width: '55px',
+                                                                        bgcolor:
+                                                                            'rgb(232, 232, 232)',
+                                                                        p: 1.5,
+                                                                        borderRadius: 1,
+                                                                        color: 'rgb(91, 244, 26)'
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        )}
+                                                        <Grid item xs={10}>
+                                                            <Typography variant="caption">
+                                                                {result.type}{' '}
+                                                                {result.emailCreator && (
+                                                                    <span>
+                                                                        by{' '}
+                                                                        <strong>
+                                                                            {
+                                                                                result.emailCreator
+                                                                            }
+                                                                        </strong>
+                                                                    </span>
+                                                                )}
+                                                            </Typography>
+                                                            <Typography variant="body1">
+                                                                {result.title}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Box>
+                                                </Paper>
+                                            ))
+                                        )}
+                                    </>
+                                )}
+                            </Box>
+                        )}
+                    </DialogContent>
+                </Dialog>
+            </Box>
         );
     }
 

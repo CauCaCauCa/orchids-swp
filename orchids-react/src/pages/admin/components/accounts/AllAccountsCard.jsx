@@ -123,11 +123,6 @@ export default function AllAccountsCard() {
     const { accounts, changePage, isLoading, totalAccounts } =
         useContext(AccountContext).data;
 
-    const [data, getComponent] = useSelectField('Search by', [
-        new SelectItem('email', 'Email'),
-        new SelectItem('username', 'Username')
-    ]);
-
     return (
         <Paper component="section" variant="outlined" sx={{ p: 4 }}>
             <Box
@@ -139,13 +134,6 @@ export default function AllAccountsCard() {
                 <Typography variant="h5" fontWeight="bold">
                     Accounts
                 </Typography>
-                <Box>
-                    <TextField label="Search" variant="outlined" />
-                    {getComponent()}
-                    <IconButton>
-                        <SearchIcon />
-                    </IconButton>
-                </Box>
             </Box>
             <CustomTablePaginated
                 listOfObjects={accounts}
