@@ -19,6 +19,7 @@ import { TeamHomepageContext } from '../../../context/team/TeamHomepageContext';
 import { TeamPostContext } from '../../../context/team/TeamPostsContextProvider';
 import { TeamPostDetailsContext } from '../../../context/team/TeamPostDetailsContextOLD';
 import { ConfirmContext } from '../../../context/ConfirmContext';
+import { NotificationContext } from '../../../context/NotificationContext';
 
 function AdminOnly({ children, role }) {
     if (role === 'creator' || role === 'admin') return children;
@@ -36,12 +37,14 @@ function MemberOnly({ children, role }) {
     return null;
 }
 
-function UserOnly({children, role}) {
+function UserOnly({ children, role }) {
     if (!(role === 'creator' || role === 'admin' || role === 'writer')) return children;
     return null;
 }
 
 export default function Team() {
+    const { showSuccess, showError, showInfo } = useContext(NotificationContext);
+
     const navigate = useNavigate();
     const {
         team: currentTeam,
@@ -63,8 +66,12 @@ export default function Team() {
     };
 
     const handleFollow = () => {
-        setIsFollowing(!isFollowing);
-        actions.follow();
+        if (localStorage.getItem('token')) {
+            setIsFollowing(!isFollowing);
+            actions.follow();
+        } else {
+            showInfo('You need to login to follow this team');
+        }
     };
 
     const handleLeaveTeam = () => {
