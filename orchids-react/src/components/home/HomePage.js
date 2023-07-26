@@ -4,7 +4,11 @@ import './HomePage.scss';
 import Avatar from '@mui/material/Avatar';
 
 import Login from '../personal/Login';
-import { GetListPostByTime, GetListPostByTimeDefault } from '../../api/postAPI';
+import {
+    GetListPostByTime,
+    GetListPostByTimeDefault,
+    GetPopularPosts
+} from '../../api/postAPI';
 import PopupPost from './PopupPost';
 import WaitPost from './WaitPost';
 import QuestionPage from '../question_page/QuestionPage';
@@ -30,6 +34,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
     const [allTeams, setAllTeams] = useState([]);
     const [myTeam, setMyTeam] = useState([]);
     const [popularTeams, setPopularTeams] = useState([]);
+    const [popularPosts, setPopularPosts] = useState([]);
 
     useEffect(() => {
         const fetchAllTeams = async () => {
@@ -54,9 +59,12 @@ export default function HomePage({ isLogin, setIsLogin }) {
                             obj1.ListEmailFollower.length
                         );
                     })
-                    .slice(0, 10);
+                    .slice(0, 5);
                 setPopularTeams(popular);
             }
+
+            const posts = await GetPopularPosts(5);
+            setPopularPosts(posts);
         };
 
         fetchAllTeams();
@@ -82,7 +90,8 @@ export default function HomePage({ isLogin, setIsLogin }) {
                     </div>
                     {/* </Link> */}
                     <div className="author">
-                        @{post.post.username} - {FormatDate(post.post.date)} {"||"} {post.post.view || 0} lượt xem
+                        @{post.post.username} - {FormatDate(post.post.date)}{' '}
+                        {'||'} {post.post.view || 0} lượt xem
                         <span style={{ margin: '0 .5rem 0 1rem' }}>
                             <i className="fa-regular fa-thumbs-up" />{' '}
                             {post.post.ListEmailLiked.length}
@@ -99,7 +108,47 @@ export default function HomePage({ isLogin, setIsLogin }) {
             </div>
         );
     }
-    function CardMini({ team }) {
+
+    function PostCardMini({ post }) {
+        return (
+            <Card
+                variant="outlined"
+                sx={{ height: '70px', width: '100%', p: 0, bgcolor: '#f0f2f5' }}
+                onClick={() => navigate(`/post-page?id=${post._id}`)}
+            >
+                <CardActionArea sx={{ height: '100%', width: '100%' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            height: '100%',
+                            width: '100%',
+                            gap: 1,
+                            justifyContent: 'flex-start'
+                        }}
+                    >
+                        <CardContent
+                            sx={{
+                                width: '70%',
+                                p: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Typography fontSize="1rem" fontWeight={500}>
+                                {post.title}
+                            </Typography>
+                            <Typography variant="caption">
+                                {post.view || 0} lượt xem
+                            </Typography>
+                        </CardContent>
+                    </Box>
+                </CardActionArea>
+            </Card>
+        );
+    }
+
+    function TeamCardMini({ team }) {
         // <Box className='card-mini' onClick={() => navigate(`/teams/${team.email}`)}>
         //     <Box component="img" src={team.avatar} alt="avatar" sx={{ width: "50px", height: "50px" }} />
         // </Box>
@@ -127,7 +176,15 @@ export default function HomePage({ isLogin, setIsLogin }) {
                                 objectFit: 'cover'
                             }}
                         />
-                        <CardContent sx={{ width: '70%', p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        <CardContent
+                            sx={{
+                                width: '70%',
+                                p: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center'
+                            }}
+                        >
                             <Typography fontSize="1rem" fontWeight={500}>
                                 {team.teamname}
                             </Typography>
@@ -150,7 +207,6 @@ export default function HomePage({ isLogin, setIsLogin }) {
         });
         GetListQuestionByTimeDefault().then((res) => {
             if (res) {
-                console.log(res);
                 setListQuestion(res);
             }
         });
@@ -274,6 +330,19 @@ export default function HomePage({ isLogin, setIsLogin }) {
                                 <h3>Đề xuất</h3>
                             </div>
                             <hr></hr>
+                            <h5>Posts</h5>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '1rem'
+                                }}
+                            >
+                                {popularPosts &&
+                                    popularPosts.map((post) => {
+                                        return <PostCardMini post={post} />;
+                                    })}
+                            </Box>
                             <h5>Teams</h5>
                             <Box
                                 sx={{
@@ -283,7 +352,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
                                 }}
                             >
                                 {popularTeams.map((team, index) => {
-                                    return <CardMini team={team} />;
+                                    return <TeamCardMini team={team} />;
                                 })}
                             </Box>
                         </>

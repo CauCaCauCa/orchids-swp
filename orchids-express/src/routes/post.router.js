@@ -4,8 +4,10 @@ const PostServices = require('../services/post.services');
 const AccountServices = require('../services/account.services');
 const TeamServices = require('../services/team.services');
 const logAuth = require('../middlewares/authentication.middleware');
-const { createNotificationToPersonal, createNotificationToFollowers } = require('../services/notification.services');
-
+const {
+    createNotificationToPersonal,
+    createNotificationToFollowers
+} = require('../services/notification.services');
 
 // TODO: create post - require token
 router.post('/create', logAuth.CheckTimeoutToken, async (req, res) => {
@@ -14,7 +16,11 @@ router.post('/create', logAuth.CheckTimeoutToken, async (req, res) => {
     var post = req.body;
     var result = await PostServices.CreatePost(post, emailCreator);
     await AccountServices.updateNumberPost(emailCreator);
-    createNotificationToFollowers(emailCreator, result.insertedId.toString().split('"')[0], 'has a new post');
+    createNotificationToFollowers(
+        emailCreator,
+        result.insertedId.toString().split('"')[0],
+        'has a new post'
+    );
     res.send(result);
 });
 // TODO: delete post - require token
@@ -41,14 +47,20 @@ router.get('/get-list-by-time', async (req, res) => {
     // user username by email
     for (let i = 0; i < result.length; i++) {
         if (result[i].isTeam == false) {
-            var user = await AccountServices.getAccountInfoByEmail(result[i].emailCreator, { username: 1 });
+            var user = await AccountServices.getAccountInfoByEmail(
+                result[i].emailCreator,
+                { username: 1 }
+            );
             // console.log(user);
             if (user) {
                 result[i].username = user.username;
                 result[i].avatar = user.avatar;
             }
         } else {
-            var team = await TeamServices.getTeam(result[i].emailCreator, { teamname: 1, avatar: 1 });
+            var team = await TeamServices.getTeam(result[i].emailCreator, {
+                teamname: 1,
+                avatar: 1
+            });
             // console.log(team);
             if (team) {
                 result[i].username = team.teamname;
@@ -63,18 +75,27 @@ router.get('/get-list-by-time', async (req, res) => {
 router.get('/get-list-by-time-and-email-creator', async (req, res) => {
     var timestamp = req.query.date;
     var emailCreator = req.query.emailCreator;
-    var result = await PostServices.GetListPostByTimeAndEmailCreator(timestamp, emailCreator);
+    var result = await PostServices.GetListPostByTimeAndEmailCreator(
+        timestamp,
+        emailCreator
+    );
     // user username by email
     for (let i = 0; i < result.length; i++) {
         if (result[i].isTeam == false) {
-            var user = await AccountServices.getAccountInfoByEmail(result[i].emailCreator, { username: 1 });
+            var user = await AccountServices.getAccountInfoByEmail(
+                result[i].emailCreator,
+                { username: 1 }
+            );
             // console.log(user);
             if (user) {
                 result[i].username = user.username;
                 result[i].avatar = user.avatar;
             }
         } else {
-            var team = await TeamServices.getTeam(result[i].emailCreator, { teamname: 1, avatar: 1 });
+            var team = await TeamServices.getTeam(result[i].emailCreator, {
+                teamname: 1,
+                avatar: 1
+            });
             // console.log(team);
             if (team) {
                 result[i].username = team.teamname;
@@ -91,13 +112,19 @@ router.get('/get-post-info', async (req, res) => {
     if (result) {
         if (result.isTeam == false) {
             // user username by email
-            var user = await AccountServices.getAccountInfoByEmail(result.emailCreator, { username: 1, avatar: 1 });
+            var user = await AccountServices.getAccountInfoByEmail(
+                result.emailCreator,
+                { username: 1, avatar: 1 }
+            );
             result.username = user.username;
             result.avatar = user.avatar;
             res.send(result);
         } else {
             // team username by email
-            var team = await TeamServices.getTeam(result.emailCreator, { teamname: 1, avatar: 1 });
+            var team = await TeamServices.getTeam(result.emailCreator, {
+                teamname: 1,
+                avatar: 1
+            });
             result.username = team.teamname;
             result.avatar = team.avatar;
             res.send(result);
@@ -131,34 +158,56 @@ router.put('/comment-post', logAuth.CheckTimeoutToken, async (req, res) => {
     res.send(result);
 });
 // TODO: delete post comment
-router.put('/delete-comment-post', logAuth.CheckTimeoutToken, async (req, res) => {
-    const token = req.headers['authorization'];
-    const email = logAuth.decodeToken(token).email;
-    var postId = req.body.postId;
-    var date = req.body.date;
-    var result = await PostServices.DeleteCommentPost(postId, email, date);
-    res.send(result);
-});
+router.put(
+    '/delete-comment-post',
+    logAuth.CheckTimeoutToken,
+    async (req, res) => {
+        const token = req.headers['authorization'];
+        const email = logAuth.decodeToken(token).email;
+        var postId = req.body.postId;
+        var date = req.body.date;
+        var result = await PostServices.DeleteCommentPost(postId, email, date);
+        res.send(result);
+    }
+);
 // TODO: like comment post
-router.put('/like-comment-post', logAuth.CheckTimeoutToken, async (req, res) => {
-    const token = req.headers['authorization'];
-    const email = logAuth.decodeToken(token).email;
-    var postId = req.body.postId;
-    var date = req.body.date;
-    var emailCommentor = req.body.emailCommentor;
-    var result = await PostServices.LikeCommentPost(postId, emailCommentor, date, email);
-    res.send(result);
-});
+router.put(
+    '/like-comment-post',
+    logAuth.CheckTimeoutToken,
+    async (req, res) => {
+        const token = req.headers['authorization'];
+        const email = logAuth.decodeToken(token).email;
+        var postId = req.body.postId;
+        var date = req.body.date;
+        var emailCommentor = req.body.emailCommentor;
+        var result = await PostServices.LikeCommentPost(
+            postId,
+            emailCommentor,
+            date,
+            email
+        );
+        res.send(result);
+    }
+);
 // TODO: unlike comment post
-router.put('/unlike-comment-post', logAuth.CheckTimeoutToken, async (req, res) => {
-    const token = req.headers['authorization'];
-    const email = logAuth.decodeToken(token).email;
-    var postId = req.body.postId;
-    var date = req.body.date;
-    var emailCommentor = req.body.emailCommentor;
-    var result = await PostServices.UnlikeCommentPost(postId, emailCommentor, date, email);
-    res.send(result);
-});
+router.put(
+    '/unlike-comment-post',
+    logAuth.CheckTimeoutToken,
+    async (req, res) => {
+        const token = req.headers['authorization'];
+        const email = logAuth.decodeToken(token).email;
+        var postId = req.body.postId;
+        var date = req.body.date;
+        var emailCommentor = req.body.emailCommentor;
+        var result = await PostServices.UnlikeCommentPost(
+            postId,
+            emailCommentor,
+            date,
+            email
+        );
+        res.send(result);
+    }
+);
 // TODO: Update view post
 router.put('/update-view-post', async (req, res) => {
     var postId = req.body.postId;
@@ -166,5 +215,15 @@ router.put('/update-view-post', async (req, res) => {
     res.send(result);
 });
 
+router.get('/top/:count', async (req, res) => {
+    try {
+        const count = req.params.count;
+        const result = await PostServices.getPopularPosts(count);
+        res.status(200).send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
 
 module.exports = router;

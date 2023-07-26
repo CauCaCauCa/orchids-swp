@@ -112,22 +112,24 @@ export default function Team() {
                                 người theo dõi
                             </Box>
                         </Box>
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                bgcolor: 'white',
-                                color: 'black',
-                                borderRadius: '10px 0 0 10px',
-                                padding: '0.5rem 1rem',
-                                fontSize: '1.2rem',
-                                fontWeight: '700',
-                                textTransform: 'uppercase'
-                            }}
-                        >
-                            {role}
-                        </Box>
+                        {role && (
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    bgcolor: 'white',
+                                    color: 'black',
+                                    borderRadius: '10px 0 0 10px',
+                                    padding: '0.5rem 1rem',
+                                    fontSize: '1.2rem',
+                                    fontWeight: '700',
+                                    textTransform: 'uppercase'
+                                }}
+                            >
+                                {role}
+                            </Box>
+                        )}
                     </Box>
                     <Box className="follow">
                         <UserOnly role={role}>

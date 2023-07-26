@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { fetchAPI } from "./templateAPI";
+import { useContext } from 'react';
+import { fetchAPI } from './templateAPI';
 
 // !Region Post functions _ non-require token
 // TODO: Get post by postId.
@@ -8,7 +8,7 @@ export async function GetPostById(postId) {
         method: 'GET',
         uri: '/post/get-post',
         body: JSON.stringify({
-            "postId": postId
+            postId: postId
         })
     });
 }
@@ -16,35 +16,41 @@ export async function GetPostById(postId) {
 export async function GetListPostByTimeDefault() {
     return fetchAPI({
         method: 'GET',
-        uri: '/post/get-list-by-time',
+        uri: '/post/get-list-by-time'
     });
 }
 // TODO: get list post by time
 export async function GetListPostByTime(date) {
     return fetchAPI({
         method: 'GET',
-        uri: '/post/get-list-by-time?date=' + date,
+        uri: '/post/get-list-by-time?date=' + date
     });
 }
 // TODO: get list post by time and emailCreator default.
 export async function GetListPostByTimeAndEmailCreatorDefault(emailCreator) {
     return fetchAPI({
         method: 'GET',
-        uri: '/post/get-list-by-time-and-email-creator?emailCreator=' + emailCreator,
+        uri:
+            '/post/get-list-by-time-and-email-creator?emailCreator=' +
+            emailCreator
     });
 }
 // TODO: get list post by time and emailCreator
 export async function GetListPostByTimeAndEmailCreator(date, emailCreator) {
     return fetchAPI({
         method: 'GET',
-        uri: '/post/get-list-by-time-and-email-creator?date=' + date + '&emailCreator=' + emailCreator,
+        uri:
+            '/post/get-list-by-time-and-email-creator?date=' +
+            date +
+            '&emailCreator=' +
+            emailCreator
     });
 }
 // TODO: get Post info for load Page Post.
 export async function GetPostInfo(postId) {
     return fetchAPI({
         method: 'GET',
-        uri: '/post/get-post-info?postId=' + postId,
+        uri: '/post/get-post-info?postId=' + postId
     });
 }
 
@@ -56,12 +62,12 @@ export async function CreatePost(title, content, bground) {
         uri: '/post/create',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
+            Authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
-            "title": title,
-            "content": content,
-            "bground": bground
+            title: title,
+            content: content,
+            bground: bground
         })
     });
 }
@@ -72,13 +78,13 @@ export async function UpdatePost(postId, title, content, bground) {
         uri: '/post/update-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
+            Authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
-            "postId": postId,
-            "title": title,
-            "content": content,
-            "bground": bground
+            postId: postId,
+            title: title,
+            content: content,
+            bground: bground
         })
     });
 }
@@ -89,17 +95,16 @@ export async function DeletePost(postId) {
         uri: '/post/delete-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
+            Authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
-            "postId": postId
+            postId: postId
         })
     });
 }
 
 // TODO: like post.
 export async function LikePost(postId) {
-
     if (!localStorage.getItem('token')) {
         // alert('You must login to like post!');
         return { msg: 'You must login to like post!' };
@@ -109,10 +114,10 @@ export async function LikePost(postId) {
         uri: '/post/like-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user like post
+            Authorization: localStorage.getItem('token') // user like post
         },
         body: JSON.stringify({
-            "postId": postId,
+            postId: postId
         })
     });
 }
@@ -127,10 +132,10 @@ export async function UnlikePost(postId) {
         uri: '/post/unlike-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user unlike post
+            Authorization: localStorage.getItem('token') // user unlike post
         },
         body: JSON.stringify({
-            "postId": postId,
+            postId: postId
         })
     });
 }
@@ -145,11 +150,11 @@ export async function CommentPost(postId, content) {
         uri: '/post/comment-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user comment post
+            Authorization: localStorage.getItem('token') // user comment post
         },
         body: JSON.stringify({
-            "postId": postId,
-            "content": content
+            postId: postId,
+            content: content
         })
     });
 }
@@ -160,12 +165,12 @@ export async function DeleteCommentPost(postId, date) {
         uri: '/post/delete-comment-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user delete comment post
+            Authorization: localStorage.getItem('token') // user delete comment post
         },
         body: JSON.stringify({
-            "postId": postId,
-            "date": date,
-            "email": localStorage.getItem('email')
+            postId: postId,
+            date: date,
+            email: localStorage.getItem('email')
         })
     });
 }
@@ -181,12 +186,12 @@ export async function LikeCommentPost(postId, date, emailCommentor) {
         uri: '/post/like-comment-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user like comment post
+            Authorization: localStorage.getItem('token') // user like comment post
         },
         body: JSON.stringify({
-            "postId": postId,
-            "date": date,
-            "emailCommentor": emailCommentor,
+            postId: postId,
+            date: date,
+            emailCommentor: emailCommentor
         })
     });
 }
@@ -202,12 +207,12 @@ export async function UnlikeCommentPost(postId, date, emailCommentor) {
         uri: '/post/unlike-comment-post',
         Headers: {
             'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token') // user unlike comment post
+            Authorization: localStorage.getItem('token') // user unlike comment post
         },
         body: JSON.stringify({
-            "postId": postId,
-            "date": date,
-            "emailCommentor": emailCommentor,
+            postId: postId,
+            date: date,
+            emailCommentor: emailCommentor
         })
     });
 }
@@ -218,10 +223,17 @@ export async function UpdateViewPost(postId) {
         method: 'PUT',
         uri: '/post/update-view-post',
         Headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "postId": postId,
+            postId: postId
         })
+    });
+}
+
+export async function GetPopularPosts(count) {
+    return fetchAPI({
+        method: 'GET',
+        uri: '/post/top/' + count
     });
 }

@@ -165,7 +165,16 @@ async function UpdateViewPost(postId) {
     close();
 }
 
+async function getPopularPosts(count) {
+    const limit = Number(count);
+    const { collection, close } = await getPostsCollection();
+    const result = await collection.find().sort({ view: -1 }).limit(limit).toArray();
+    close();
+    return result;
+}
+
 module.exports = {
+    getPopularPosts,
     CreatePost,
     UpdatePost,
     DeletePost,
