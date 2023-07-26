@@ -478,16 +478,16 @@ async function deleteTeam(teamEmail) {
 
 async function deleteTeamPost(postId, teamEmail, callerEmail) {
     const { collection, close } = await getTeamsCollection();
-
+    const { collection: postCollection, close: closePost } = await getPostsCollection();
     if (!isMember(teamEmail, callerEmail) || !isOwner(teamEmail, callerEmail)) {
         throw new Error('You are not the creator of this post');
     }
 
     // delete post
-    await collection.deleteOne({
-        _id: new ObjectId(postId),
-        emailCreator: teamEmail
+    await postCollection.deleteOne({
+        _id: new ObjectId(postId)
     });
+    closePost();
 
     // subtract number of posts from team
     const response = collection.updateOne(

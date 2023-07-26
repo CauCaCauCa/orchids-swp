@@ -57,6 +57,7 @@ export default function Team() {
     const [isFollowing, setIsFollowing] = useState(
         currentTeam?.ListEmailFollower.includes(localStorage.getItem('email'))
     );
+
     const handleCreatePost = () => {
         setOpenCreatePost(true);
     };
