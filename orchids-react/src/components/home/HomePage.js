@@ -138,9 +138,9 @@ export default function HomePage({ isLogin, setIsLogin }) {
                                 }}
                             >
                                 <Typography fontSize="1rem" fontWeight={700}>
-                                    {post.title.length < 25
+                                    {post.title.length < 20
                                         ? post.title
-                                        : post.title.slice(0, 25) + '...'}
+                                        : post.title.slice(0, 20) + '...'}
                                 </Typography>
                                 <Typography variant="caption">
                                     {post.view || 0} lượt xem
