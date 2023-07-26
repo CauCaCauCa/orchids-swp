@@ -3,7 +3,8 @@ import {
     DeleteCommentPost,
     GetPostInfo,
     LikeCommentPost,
-    UnlikeCommentPost
+    UnlikeCommentPost,
+    UpdateViewPost
 } from '../../api/postAPI';
 import { LikePost, UnlikePost } from '../../api/postAPI';
 import { useNavigate } from 'react-router-dom';
@@ -44,6 +45,7 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                     setIsLiked(true);
                 }
                 setPost(res);
+                UpdateViewPost(res._id);    
                 // get list username by emails
                 var list = res.ListComment.map((comment) => comment.email);
                 var uniqueList = [...new Set(list)];
@@ -52,6 +54,7 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                 });
             });
         } else {
+            UpdateViewPost(PostData._id);
             setPost(PostData);
             setLikeAmount(PostData.ListEmailLiked.length);
             // check if user liked this post
@@ -169,7 +172,7 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
                             <span style={{ marginRight: '.5rem' }}>
                                 @{post.username}
                             </span>{' '}
-                            {FormatDate(post.date)}
+                            {FormatDate(post.date)} {'||'} {post.view || 0} lượt xem
                             {(post.emailCreator ==
                                 localStorage.getItem('email') ||
                                 isAllowedEdits) && (

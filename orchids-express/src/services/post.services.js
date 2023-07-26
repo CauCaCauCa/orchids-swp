@@ -146,6 +146,15 @@ async function deleteAllPostsByTeam(teamEmail) {
     return result;
 }
 
+// TODO: UpdateViewPost
+async function UpdateViewPost(postId) {
+    const { collection, close } = await connect('orchids-1', 'post');
+    const query = { _id: new ObjectId(postId) };
+    const update = { $inc: { view: 1 } };
+    await collection.updateOne(query, update);
+    close();
+}
+
 module.exports = {
     CreatePost,
     UpdatePost,
@@ -159,7 +168,8 @@ module.exports = {
     DeleteCommentPost,
     LikeCommentPost,
     UnlikeCommentPost,
-    deleteAllPostsByTeam
+    deleteAllPostsByTeam,
+    UpdateViewPost,
 };
 
 async function main() {

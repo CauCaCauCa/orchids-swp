@@ -220,7 +220,7 @@ export default function PopupShowCard({ qcard, setIsPopup, listQuestion, setList
                 </Accordion>
                 <h4>Câu trả lời ({qcard.answers.length})</h4>
                 {
-                    qcard.answers[0].username &&
+                    // qcard.answers[0].username &&
                     <>
                         {qcard.answers.reverse().map((answer, index) => {
                             return (

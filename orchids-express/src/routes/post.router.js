@@ -159,6 +159,12 @@ router.put('/unlike-comment-post', logAuth.CheckTimeoutToken, async (req, res) =
     var result = await PostServices.UnlikeCommentPost(postId, emailCommentor, date, email);
     res.send(result);
 });
+// TODO: Update view post
+router.put('/update-view-post', async (req, res) => {
+    var postId = req.body.postId;
+    var result = await PostServices.UpdateViewPost(postId);
+    res.send(result);
+});
 
 
 module.exports = router;

@@ -63,7 +63,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
                     <div className='title' onClick={handlePopup}>{post.post.title}</div>
                     {/* </Link> */}
                     <div className='author'>
-                        @{post.post.username} - {FormatDate(post.post.date)}
+                        @{post.post.username} - {FormatDate(post.post.date)} {"||"} {post.post.view} lượt xem
                         <span style={{ margin: '0 .5rem 0 1rem' }}><i className="fa-regular fa-thumbs-up" /> {post.post.ListEmailLiked.length}</span>
                         <span style={{ margin: '0 .5rem' }}><i className="fa-regular fa-comment" /> {post.post.ListComment.length}</span>
                     </div>

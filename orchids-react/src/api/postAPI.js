@@ -211,3 +211,17 @@ export async function UnlikeCommentPost(postId, date, emailCommentor) {
         })
     });
 }
+
+// /update-view-post
+export async function UpdateViewPost(postId) {
+    return fetchAPI({
+        method: 'PUT',
+        uri: '/post/update-view-post',
+        Headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "postId": postId,
+        })
+    });
+}
