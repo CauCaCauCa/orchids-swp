@@ -18,6 +18,9 @@ import { ConfirmContext } from '../../context/ConfirmContext';
 
 // POSTDATA can be string or object (string = id, object = full post)
 export default function PostPage({ PostData, isAllowedEdits = false, isTeam = false }) {
+
+    console.log(isAllowedEdits);
+
     const [post, setPost] = useState(null);
     const [likeAmount, setLikeAmount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
@@ -118,6 +121,10 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
     }
 
     function likeComment(postId, dateComment, emailCommentor) {
+        if(localStorage.getItem('email') == null) {
+            alert('Bạn cần đăng nhập để thực hiện chức năng này.');
+            return;
+        }
         LikeCommentPost(postId, dateComment, emailCommentor).then((res) => {
             if (res.acknowledged == true) {
                 post.ListComment.find(
@@ -127,12 +134,16 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 ).ListEmailLiked.push(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                alert('like fail');
+                alert('Failed to like. Please try again later.');
             }
         });
     }
 
     function unlikeComment(postId, dateComment, emailCommentor) {
+        if(localStorage.getItem('email') == null) {
+            alert('Bạn cần đăng nhập để thực hiện chức năng này.');
+            return;
+        }
         UnlikeCommentPost(postId, dateComment, emailCommentor).then((res) => {
             if (res.acknowledged == true) {
                 post.ListComment.find(
@@ -142,7 +153,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 ).ListEmailLiked.pop(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                alert('unlike fail');
+                alert('Failed to unlike post. Please try again later.');
             }
         });
     }
