@@ -215,7 +215,8 @@ function CreateTeam({ open, setOpen, setAccount, account }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!(teamname && description)) {
+        setOpen(false);
+        if (!(teamname && description && bground && avatar)) {
             showError('Vui lòng điền đầy đủ thông tin');
             return;
         }
@@ -304,7 +305,6 @@ function CreateTeam({ open, setOpen, setAccount, account }) {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        type="submit"
                         variant="contained"
                         color="primary"
                         onClick={handleSubmit}

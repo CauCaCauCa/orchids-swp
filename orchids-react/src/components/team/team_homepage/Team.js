@@ -33,17 +33,23 @@ function WriterOnly({ children, role }) {
 }
 
 function MemberOnly({ children, role }) {
-    if (role === 'admin' || role === 'writer') return children;
+    if (
+        localStorage.getItem('email') &&
+        (role === 'admin' || role === 'writer')
+    )
+        return children;
     return null;
 }
 
 function UserOnly({ children, role }) {
-    if (!(role === 'creator' || role === 'admin' || role === 'writer')) return children;
+    if (!(role === 'creator' || role === 'admin' || role === 'writer'))
+        return children;
     return null;
 }
 
 export default function Team() {
-    const { showSuccess, showError, showInfo } = useContext(NotificationContext);
+    const { showSuccess, showError, showInfo } =
+        useContext(NotificationContext);
 
     const navigate = useNavigate();
     const {
@@ -57,6 +63,7 @@ export default function Team() {
     const [isFollowing, setIsFollowing] = useState(
         currentTeam?.ListEmailFollower.includes(localStorage.getItem('email'))
     );
+
     const handleCreatePost = () => {
         setOpenCreatePost(true);
     };
@@ -104,6 +111,22 @@ export default function Team() {
                                 {currentTeam.ListEmailFollower.length || 0}{' '}
                                 người theo dõi
                             </Box>
+                        </Box>
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                bgcolor: 'white',
+                                color: 'black',
+                                borderRadius: '10px 0 0 10px',
+                                padding: '0.5rem 1rem',
+                                fontSize: '1.2rem',
+                                fontWeight: '700',
+                                textTransform: 'uppercase'
+                            }}
+                        >
+                            {role}
                         </Box>
                     </Box>
                     <Box className="follow">
@@ -212,7 +235,7 @@ export default function Team() {
                                         Số lượng thành viên:{' '}
                                         <strong>
                                             {currentTeam.ListEmailMember
-                                                .length || 0}
+                                                .length + 1 || 1}
                                         </strong>
                                     </span>
                                 </Typography>

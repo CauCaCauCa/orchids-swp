@@ -29,7 +29,7 @@ export default function AccountContextProvider({ children }) {
         AllAccounts.setList((list) =>
             list.map((account) =>
                 account.email === email
-                    ? { ...account, status: !account.status }
+                    ? { ...account, status: account.status === 'true' ? 'false' : 'true' }
                     : account
             )
         );

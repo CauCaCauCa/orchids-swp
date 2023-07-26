@@ -1,14 +1,15 @@
 const {
     getTeamsCollection,
     getPostsCollection,
-    getAccountsCollection
+    getAccountsCollection,
+    connect
 } = require('../configs/MongoDB');
 const { Team } = require('../modules/team.module');
 const { Post } = require('../modules/post.module');
 const AccountService = require('./account.services');
 const PostService = require('./post.services');
 const { TeamMember } = require('../modules/team.module');
-const NotificationService = require('./notification.services');
+const { ObjectId } = require('mongodb');
 
 async function getTeam(teamEmail, projection = {}) {
     const { collection, close } = await getTeamsCollection();
@@ -160,6 +161,8 @@ async function addMember(teamEmail, memberEmail, role) {
     AccountService.addEmailToTeamAttendList(memberEmail, teamEmail);
     close();
 
+    await notifyAccountAddToTeamMember(teamEmail, memberEmail, role);
+
     return result;
 }
 
@@ -208,6 +211,9 @@ async function updateMemberRole(teamEmail, memberEmail, role, caller) {
     );
 
     close();
+
+    notifyAccountUpdateRole(teamEmail, memberEmail, role);
+
     return result;
 }
 
@@ -302,12 +308,11 @@ async function createTeamPost(title, content, bground, teamEmail) {
     // NOTIFY FOLLOWERS
     const team = await getTeam(teamEmail);
     clostTeam();
-    await NotificationService.createNotificationToFollowers(
+    await createNotificationToFollowers(
         team.email,
         result.insertedId,
         'has a new post'
     );
-
 
     return response[0];
 }
@@ -467,7 +472,7 @@ async function deleteTeam(teamEmail) {
     });
     console.log(count);
 
-    const postResponse = await PostService.deleteAllPostsByTeam(teamEmail);
+    const postResponse = await deleteAllPostsByTeam(teamEmail);
     console.log(postResponse);
 
     const response = await collection.deleteOne({ email: teamEmail });
@@ -476,8 +481,51 @@ async function deleteTeam(teamEmail) {
     return response;
 }
 
-function deleteTeamPost(postId, teamId) {
-    
+async function deleteTeamPost(postId, teamEmail, callerEmail) {
+    const { collection, close } = await getTeamsCollection();
+    const { collection: postCollection, close: closePost } =
+        await getPostsCollection();
+    if (!isMember(teamEmail, callerEmail) || !isOwner(teamEmail, callerEmail)) {
+        throw new Error('You are not the creator of this post');
+    }
+
+    // delete post
+    await postCollection.deleteOne({
+        _id: new ObjectId(postId)
+    });
+    closePost();
+
+    // subtract number of posts from team
+    const response = collection.updateOne(
+        { email: teamEmail },
+        { $inc: { NumberPost: -1 } }
+    );
+
+    close();
+    return response;
+}
+
+async function getTopTeams(count) {
+    const { collection, close } = await getTeamsCollection();
+    const limit = Number(count);
+    const result = await collection
+        .aggregate([
+            {
+                $addFields: {
+                    listSize: { $size: '$ListEmailFollower' }
+                }
+            },
+            {
+                $sort: { listSize: -1 }
+            },
+            {
+                $limit: limit
+            }
+        ])
+        .toArray();
+
+    close();
+    return result;
 }
 
 module.exports = {
@@ -501,7 +549,9 @@ module.exports = {
     getAllTeams,
     getListInfoTeamByEmails,
     followTeam: toggleFollowTeam,
-    leaveTeam
+    leaveTeam,
+    deleteTeamPost,
+    getTopTeams
 };
 
 // // !test
@@ -510,3 +560,78 @@ module.exports = {
 // }
 
 // test();
+
+async function createNotificationToFollowers(from, Id, type) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+    const { collection: collection2, close: close2 } =
+        await getTeamsCollection();
+    // from : email of user who post
+    // postId : id of post
+    var listTo = [];
+    if (from.includes('@orchids')) {
+        var result = await collection2.find({ email: from }).toArray();
+        listTo = result[0].ListEmailFollower;
+        close2();
+    } else {
+        var result = await getAccountInfoByEmail(from);
+        listTo = result.ListEmailFollower;
+    }
+
+    for (const to of listTo) {
+        var notification = {
+            from: from,
+            to: to,
+            type: type,
+            id: Id,
+            date: Date.now(),
+            hasSeen: false
+        };
+        if (notification.from !== notification.to) {
+            await collection.insertOne(notification);
+        }
+    }
+    close();
+}
+
+async function deleteAllPostsByTeam(teamEmail) {
+    const { collection, close } = await getPostsCollection();
+    const result = await collection.deleteMany({ emailCreator: teamEmail });
+    close();
+    return result;
+}
+
+async function notifyAccountAddToTeamMember(from, to, role) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+
+    var notification = {
+        from: from,
+        to: to,
+        type: 'teamMember',
+        id: role,
+        date: Date.now(),
+        hasSeen: false
+    };
+    if (notification.from !== notification.to) {
+        await collection.insertOne(notification);
+    }
+
+    close();
+}
+
+async function notifyAccountUpdateRole(from, to, role) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+
+    var notification = {
+        from: from,
+        to: to,
+        type: 'teamRole',
+        id: role,
+        date: Date.now(),
+        hasSeen: false
+    };
+    if (notification.from !== notification.to) {
+        await collection.insertOne(notification);
+    }
+
+    close();
+}

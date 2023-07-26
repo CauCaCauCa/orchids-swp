@@ -96,7 +96,7 @@ function Actions({ row }) {
                     <Button
                         onClick={() =>
                             openConfirm(
-                                'Are you sure you want to deactivate this account?',
+                                `Are you sure you want to ${row.status === 'true' ? 'deactivate' : 'activate'} this account?`,
                                 () => handleToggleDeactivateAccount(row.email)
                             )
                         }
@@ -108,10 +108,10 @@ function Actions({ row }) {
                             textTransform: 'none'
                         }}
                         key="deactivate"
-                        disabled={row.role === 'AD' || row.status === false}
+                        disabled={row.role === 'AD'}
                     >
                         <DeleteIcon />
-                        <Typography variant="body1">Deactivate</Typography>
+                        <Typography variant="body1">{row.status === 'true' ? 'Deactivate' : 'Activate'}</Typography>
                     </Button>
                 ]}
             />
@@ -122,11 +122,6 @@ function Actions({ row }) {
 export default function AllAccountsCard() {
     const { accounts, changePage, isLoading, totalAccounts } =
         useContext(AccountContext).data;
-
-    const [data, getComponent] = useSelectField('Search by', [
-        new SelectItem('email', 'Email'),
-        new SelectItem('username', 'Username')
-    ]);
 
     return (
         <Paper component="section" variant="outlined" sx={{ p: 4 }}>
@@ -139,13 +134,6 @@ export default function AllAccountsCard() {
                 <Typography variant="h5" fontWeight="bold">
                     Accounts
                 </Typography>
-                <Box>
-                    <TextField label="Search" variant="outlined" />
-                    {getComponent()}
-                    <IconButton>
-                        <SearchIcon />
-                    </IconButton>
-                </Box>
             </Box>
             <CustomTablePaginated
                 listOfObjects={accounts}

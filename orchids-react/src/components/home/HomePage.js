@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './HomePage.scss'
+import './HomePage.scss';
 import Avatar from '@mui/material/Avatar';
 
 import Login from '../personal/Login';
@@ -10,17 +10,26 @@ import WaitPost from './WaitPost';
 import QuestionPage from '../question_page/QuestionPage';
 import { GetListQuestionByTimeDefault } from '../../api/questionAPI';
 import { getAllTeams } from '../../api/teamAPI';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardMedia,
+    Typography
+} from '@mui/material';
 import IconImage from '../common/IconImage';
-
-
 
 export default function HomePage({ isLogin, setIsLogin }) {
     const [listPost, setListPost] = useState([]);
     const [listQuestion, setListQuestion] = useState([]);
-    const [allTeams, setAllTeams] = useState([])
-    const [myTeam, setMyTeam] = useState([])
-    const [popularTeams, setPopularTeams] = useState([])
+    const [allTeams, setAllTeams] = useState([]);
+    const [myTeam, setMyTeam] = useState([]);
+    const [popularTeams, setPopularTeams] = useState([]);
 
     useEffect(() => {
         const fetchAllTeams = async () => {
@@ -28,24 +37,30 @@ export default function HomePage({ isLogin, setIsLogin }) {
             setAllTeams(response);
 
             if (response) {
-
                 // perform filtering of all teams to get my teams
                 const currentEmail = localStorage.getItem('email');
-                const mine = response.filter(team => {
-                    return team.EmailOwner === currentEmail
-                }).slice(0, 5)
+                const mine = response
+                    .filter((team) => {
+                        return team.EmailOwner === currentEmail;
+                    })
+                    .slice(0, 5);
                 setMyTeam(mine);
 
                 // perform sorting of all teams to get popular teams
-                const popular = response.sort((obj1, obj2) => {
-                    return obj2.ListEmailFollower.length - obj1.ListEmailFollower.length
-                }).slice(0, 10);
+                const popular = response
+                    .sort((obj1, obj2) => {
+                        return (
+                            obj2.ListEmailFollower.length -
+                            obj1.ListEmailFollower.length
+                        );
+                    })
+                    .slice(0, 10);
                 setPopularTeams(popular);
             }
-        }
+        };
 
         fetchAllTeams();
-    }, [])
+    }, []);
 
     const navigate = useNavigate();
 
@@ -56,49 +71,90 @@ export default function HomePage({ isLogin, setIsLogin }) {
         }
 
         return (
-            <div className='card-post' id={post.post.date} key={key}>
-                {isPopup && <PopupPost PostData={post.post} setIsPopup={setIsPopup} />}
+            <div className="card-post" id={post.post.date} key={key}>
+                {isPopup && (
+                    <PopupPost PostData={post.post} setIsPopup={setIsPopup} />
+                )}
                 <div>
                     {/* <Link target="_blank" to={'/post-page?id=' + post.post._id}> */}
-                    <div className='title' onClick={handlePopup}>{post.post.title}</div>
+                    <div className="title" onClick={handlePopup}>
+                        {post.post.title}
+                    </div>
                     {/* </Link> */}
-                    <div className='author'>
-                        @{post.post.username} - {FormatDate(post.post.date)} {"||"} {post.post.view} lượt xem
-                        <span style={{ margin: '0 .5rem 0 1rem' }}><i className="fa-regular fa-thumbs-up" /> {post.post.ListEmailLiked.length}</span>
-                        <span style={{ margin: '0 .5rem' }}><i className="fa-regular fa-comment" /> {post.post.ListComment.length}</span>
+                    <div className="author">
+                        @{post.post.username} - {FormatDate(post.post.date)} {"||"} {post.post.view || 0} lượt xem
+                        <span style={{ margin: '0 .5rem 0 1rem' }}>
+                            <i className="fa-regular fa-thumbs-up" />{' '}
+                            {post.post.ListEmailLiked.length}
+                        </span>
+                        <span style={{ margin: '0 .5rem' }}>
+                            <i className="fa-regular fa-comment" />{' '}
+                            {post.post.ListComment.length}
+                        </span>
                     </div>
                 </div>
-                <img src={post.post.bground} alt='#' onClick={handlePopup} />
+                <img src={post.post.bground} alt="#" onClick={handlePopup} />
                 <hr />
-                <div id='comment'>
-
-                </div>
+                <div id="comment"></div>
             </div>
-        )
+        );
     }
     function CardMini({ team }) {
+        // <Box className='card-mini' onClick={() => navigate(`/teams/${team.email}`)}>
+        //     <Box component="img" src={team.avatar} alt="avatar" sx={{ width: "50px", height: "50px" }} />
+        // </Box>
         return (
-            <Box className='card-mini' onClick={() => navigate(`/teams/${team.email}`)}>
-                <Box component="img" src={team.avatar} alt="avatar" sx={{ width: "50px", height: "50px" }} />
-            </Box>
-        )
+            <Card
+                variant="outlined"
+                sx={{ height: '70px', width: '100%', p: 0, bgcolor: '#f0f2f5' }}
+                onClick={() => navigate(`/teams/${team.email}`)}
+            >
+                <CardActionArea sx={{ height: '100%', width: '100%' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            height: '100%',
+                            width: '100%',
+                            gap: 1,
+                            justifyContent: 'flex-start'
+                        }}
+                    >
+                        <IconImage
+                            src={team.avatar}
+                            sx={{
+                                height: '100%',
+                                width: '100px',
+                                objectFit: 'cover'
+                            }}
+                        />
+                        <CardContent sx={{ width: '70%', p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <Typography fontSize="1rem" fontWeight={500}>
+                                {team.teamname}
+                            </Typography>
+                            <Typography variant="caption">
+                                {team.ListEmailFollower?.length} người theo dõi
+                            </Typography>
+                        </CardContent>
+                    </Box>
+                </CardActionArea>
+            </Card>
+        );
     }
 
     // load data
     useEffect(() => {
         // scroll to top
         window.scrollTo(0, 0);
-        GetListPostByTimeDefault().then(res => {
+        GetListPostByTimeDefault().then((res) => {
             setListPost(res);
-        })
-        GetListQuestionByTimeDefault().then(res => {
+        });
+        GetListQuestionByTimeDefault().then((res) => {
             if (res) {
                 console.log(res);
-                setListQuestion(res)
+                setListQuestion(res);
             }
-        }
-        )
-    }, [])
+        });
+    }, []);
 
     function HomeDesktop() {
         const [isPostLoad, setIsPostLoad] = useState(true);
@@ -112,14 +168,16 @@ export default function HomePage({ isLogin, setIsLogin }) {
                 const scrollValue = document.documentElement.scrollTop;
 
                 if (scrollValue >= maxScroll && isPostLoad) {
-                    const elements = document.getElementsByClassName('card-post');
+                    const elements =
+                        document.getElementsByClassName('card-post');
                     if (elements.length > 0) {
                         const lastElement = elements[elements.length - 1];
                         const lastElementId = lastElement.id;
                         // id have value is timestamp
-                        GetListPostByTime(lastElementId).then(res => {
+                        GetListPostByTime(lastElementId).then((res) => {
                             if (res.length === 0) {
-                                var waitPost = document.getElementById('wait-post');
+                                var waitPost =
+                                    document.getElementById('wait-post');
                                 if (waitPost) {
                                     waitPost.style.display = 'none';
                                 }
@@ -127,7 +185,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
                             } else {
                                 setListPost([...listPost, ...res]);
                             }
-                        })
+                        });
                     }
                 }
             };
@@ -142,71 +200,103 @@ export default function HomePage({ isLogin, setIsLogin }) {
         }, [isPostLoad]);
 
         return (
-            <div className='wrap-home'>
-                {isLogin ?
-                    <div className='home-left'>
-                        <div className='go-to-page-btn' onClick={() => { navigate('/personal') }}>
-                            <Avatar alt="Remy Sharp" src={localStorage.getItem('avatar')} style={{ marginLeft: '1rem' }} />
-                            <p style={{ fontSize: '1rem', lineHeight: '10px', fontWeight: 'bold' }}>@{localStorage.getItem('username')}</p>
+            <div className="wrap-home">
+                {isLogin ? (
+                    <div className="home-left">
+                        <div
+                            className="go-to-page-btn"
+                            onClick={() => {
+                                navigate('/personal');
+                            }}
+                        >
+                            <Avatar
+                                alt="Remy Sharp"
+                                src={localStorage.getItem('avatar')}
+                                style={{ marginLeft: '1rem' }}
+                            />
+                            <p
+                                style={{
+                                    fontSize: '1rem',
+                                    lineHeight: '10px',
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                @{localStorage.getItem('username')}
+                            </p>
                         </div>
 
                         <hr style={{ width: '95%', color: 'gray' }} />
-                        <div id='your-teams-board' style={{ overflow: 'hidden', marginLeft: "5px" }}>
+                        <div
+                            id="your-teams-board"
+                            style={{ overflow: 'hidden', marginLeft: '5px' }}
+                        >
                             <YourTeams teams={myTeam} />
                         </div>
                     </div>
-                    : <div className='home-left'>
+                ) : (
+                    <div className="home-left">
                         <br />
-                        <h5 style={{ marginLeft: '2.3rem' }}>*Đăng nhập để có trải nghiệm tốt nhất</h5>
+                        <h5 style={{ marginLeft: '2.3rem' }}>
+                            *Đăng nhập để có trải nghiệm tốt nhất
+                        </h5>
                         <Login setIsLogin={setIsLogin} getMini={'true'} />
-                    </div>}
-                <div className='home-center'>
-                    {
-                        window.location.pathname === '/' ?
-                            (
-                                <>
-                                    <h3 style={{ marginBottom: '2rem' }}>
-                                        Bài viết mới nhất
-                                    </h3>
-                                    {listPost.map((post, index) => (
-                                        <CardPost post={post} key={index} />
-                                    ))}
-                                    <div id='wait-post'>
-                                        <WaitPost />
-                                    </div>
-                                </>
-                            )
-                            :
-                            <>
-                                <QuestionPage listQuestion={listQuestion} setListQuestion={setListQuestion} />
-                            </>
-                    }
-                </div>
-                <div className='home-right'>
-                    {isLogin ?
+                    </div>
+                )}
+                <div className="home-center">
+                    {window.location.pathname === '/' ? (
                         <>
-                            <div className='hint' style={{ marginLeft: '2%', color: 'gray' }}>
+                            <h3 style={{ marginBottom: '2rem' }}>
+                                Bài viết mới nhất
+                            </h3>
+                            {listPost.map((post, index) => (
+                                <CardPost post={post} key={index} />
+                            ))}
+                            <div id="wait-post">
+                                <WaitPost />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <QuestionPage
+                                listQuestion={listQuestion}
+                                setListQuestion={setListQuestion}
+                            />
+                        </>
+                    )}
+                </div>
+                <div className="home-right">
+                    {isLogin ? (
+                        <>
+                            <div
+                                className="hint"
+                                style={{ marginLeft: '2%', color: 'gray' }}
+                            >
                                 <h3>Đề xuất</h3>
                             </div>
                             <hr></hr>
-                            {
-                                popularTeams.map((team, index) => {
-                                    return (
-                                        <CardMini team={team} />
-                                    )
-                                })
-                            }
+                            <h5>Teams</h5>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '1rem'
+                                }}
+                            >
+                                {popularTeams.map((team, index) => {
+                                    return <CardMini team={team} />;
+                                })}
+                            </Box>
                         </>
-                        : <></>}
+                    ) : (
+                        <></>
+                    )}
                 </div>
-            </div >
-        )
+            </div>
+        );
     }
 
     function HomeMobile() {
-        return (
-            <></>
-        )
+        return <></>;
     }
 
     return (
@@ -214,7 +304,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
             {window.innerWidth >= 1200 && <HomeDesktop />}
             {window.innerWidth < 1200 && <HomeMobile />}
         </>
-    )
+    );
 }
 
 function YourTeams({ teams }) {
@@ -234,28 +324,83 @@ function YourTeams({ teams }) {
 
     return (
         <>
-            <Accordion defaultExpanded sx={{ bgcolor: "transparent" }} variant='outlined'>
+            <Accordion
+                defaultExpanded
+                sx={{ bgcolor: 'transparent' }}
+                variant="outlined"
+            >
                 <AccordionSummary>
-                    <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
-                        <Typography variant='h6' flexGrow={1} color='gray' fontWeight="bold" id='your-teams-expan'><i className="fa-duotone fa-people-group" /> Nhóm của bạn</Typography>
-                        <i className="fa-solid fa-caret-down fa-lg"/>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            width: '100%',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <Typography
+                            variant="h6"
+                            flexGrow={1}
+                            color="gray"
+                            fontWeight="bold"
+                            id="your-teams-expan"
+                        >
+                            <i className="fa-duotone fa-people-group" /> Nhóm
+                            của bạn
+                        </Typography>
+                        <i className="fa-solid fa-caret-down fa-lg" />
                     </Box>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' gap={1}>
-                        {
-                            teams.map((team) => (
-                                <Card variant='outlined' sx={{ height: "70px", width: "100%", p: 0, bgcolor: "#f0f2f5" }}>
-                                    <CardActionArea onClick={() => navigate(`/teams/${team.email}`)} sx={{ display: "flex", height: "100%", width: "100%", justifyContent: "flex-start" }}>
-                                        <CardMedia image={team.avatar} sx={{ height: "100%", width: "35%", objectFit: "cover" }} />
-                                        <CardContent sx={{ width: "70%" }}>
-                                            <Typography fontSize=".9rem">{team.teamname}</Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            ))
-                        }
-                        <Button variant='contained' onClick={() => navigate('/personal/teams')}>Xem thêm</Button>
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={1}
+                    >
+                        {teams.map((team) => (
+                            <Card
+                                variant="outlined"
+                                sx={{
+                                    height: '70px',
+                                    width: '100%',
+                                    p: 0,
+                                    bgcolor: '#f0f2f5'
+                                }}
+                            >
+                                <CardActionArea
+                                    onClick={() =>
+                                        navigate(`/teams/${team.email}`)
+                                    }
+                                    sx={{
+                                        display: 'flex',
+                                        height: '100%',
+                                        width: '100%',
+                                        justifyContent: 'flex-start'
+                                    }}
+                                >
+                                    <CardMedia
+                                        image={team.avatar}
+                                        sx={{
+                                            height: '100%',
+                                            width: '35%',
+                                            objectFit: 'cover'
+                                        }}
+                                    />
+                                    <CardContent sx={{ width: '70%' }}>
+                                        <Typography fontSize=".9rem">
+                                            {team.teamname}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        ))}
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate('/personal/teams')}
+                        >
+                            Xem thêm
+                        </Button>
                     </Box>
                 </AccordionDetails>
             </Accordion>
@@ -274,9 +419,8 @@ function YourTeams({ teams }) {
             }
             <Button variant="contained" color="primary" style={{ margin: '2rem 0 0 2rem' }} onClick={() => { navigate('/personal/teams') }}>Show more</Button> */}
         </>
-    )
+    );
 }
-
 
 function FormatDate(date) {
     const postDate = new Date(date);
@@ -286,7 +430,7 @@ function FormatDate(date) {
         year: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        second: 'numeric',
+        second: 'numeric'
     }).format(postDate);
     return formattedDate;
 }

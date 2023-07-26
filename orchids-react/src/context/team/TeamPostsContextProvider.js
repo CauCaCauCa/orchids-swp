@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import useFetch from "../../hooks/useFetch";
-import { createTeamPost, getTeamPostsByTimestamp, getTeamPostsByTimestampDefault } from "../../api/teamAPI";
+import { createTeamPost, deleteTeamPost, getTeamPostsByTimestamp, getTeamPostsByTimestampDefault } from "../../api/teamAPI";
 import { TeamHomepageContext } from "./TeamHomepageContext";
 import { NotificationContext } from "../NotificationContext";
 import TeamPostDetailsContextProvider from "./TeamPostDetailsContextOLD";
@@ -11,6 +11,10 @@ export const TeamPostContext = createContext();
 export default function TeamPostContextProvider({ children }) {
 
     const { team, setTeam } = useContext(TeamHomepageContext);
+
+    function refresher() {
+        refresh();
+    }
 
     const [listPosts, isLoadingPosts, refresh, setListPosts] = useFetch(getTeamPostsByTimestampDefault, team.email);
     const { showSuccess, showError } = useContext(NotificationContext);
@@ -36,6 +40,21 @@ export default function TeamPostContextProvider({ children }) {
         }
 
         createTeamPostInDB();
+    }
+
+    async function deletePost(id, emailCreator) {
+        await deleteTeamPost(emailCreator, id).then((res) => {
+            console.log(res);
+            if (res.acknowledged === true && res.modifiedCount === 1) {
+                showSuccess('Post deleted successfully.');
+            } else {
+                showError('Failed to delete post.');
+            }
+        });
+
+        setListPosts((prev) => {
+            return prev.filter((post) => post._id !== id);
+        })
     }
 
     async function getNextPosts(latestId) {
@@ -115,7 +134,7 @@ export default function TeamPostContextProvider({ children }) {
     }
 
     return (
-        <TeamPostContext.Provider value={{ listPosts, getNextPosts, addPost, addComment, toggleLikeComment }}>
+        <TeamPostContext.Provider value={{ refresher, listPosts, getNextPosts, addPost, deletePost, addComment, toggleLikeComment }}>
             <TeamPostDetailsContextProvider>
                 {children}
             </TeamPostDetailsContextProvider>

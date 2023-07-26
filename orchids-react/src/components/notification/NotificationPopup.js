@@ -6,9 +6,10 @@ import {
     getNotifications,
     setHasSeen
 } from '../../api/notificationAPI';
-import { Paper } from '@mui/material';
+import { IconButton, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmContext } from '../../context/ConfirmContext';
+import { NotificationContext } from '../../context/NotificationContext';
 
 const style = {
     position: 'absolute',
@@ -30,6 +31,8 @@ export default function NotificationPopup({ children }) {
     const handleClose = () => setOpen(false);
     const { openConfirm } = React.useContext(ConfirmContext);
     const navigate = useNavigate();
+
+    const { showSuccess, showInfo } = React.useContext(NotificationContext);
 
     const [listNotifications, setListNotifications] = React.useState([]);
     const [isHaveNotification, setIsHaveNotification] = React.useState(false);
@@ -71,6 +74,14 @@ export default function NotificationPopup({ children }) {
         return () => clearInterval(interval);
     }, []);
 
+    function handleDeleteNotification(item) {
+        deleteNotification(item._id);
+        setListNotifications(
+            listNotifications.filter((noti) => noti._id !== item._id)
+        );
+        showSuccess('Delete notification successfully!');
+    }
+
     return (
         <>
             <a
@@ -111,102 +122,120 @@ export default function NotificationPopup({ children }) {
                     )}
                     {localStorage.getItem('token') && (
                         <>
-                            {listNotifications.map((item, index) => {
-                                return (
-                                    <div key={index}>
-                                        <i
-                                            className="fa-solid fa-trash-can-xmark"
-                                            onClick={() => {
-                                                openConfirm(
-                                                    'Are you sure you wish to delete this item?',
-                                                    () => {
-                                                        deleteNotification(
-                                                            item._id
-                                                        );
-                                                        setListNotifications(
-                                                            listNotifications.filter(
-                                                                (noti) =>
-                                                                    noti._id !==
-                                                                    item._id
-                                                            )
-                                                        );
-                                                    }
-                                                );
-                                            }}
-                                            style={{
-                                                position: 'relative',
-                                                left: '27rem',
-                                                top: '3rem',
-                                                color: 'red',
-                                                cursor: 'pointer'
-                                            }}
-                                        ></i>
-                                        <Paper
-                                            elevation={4}
-                                            style={{
-                                                padding: '1rem 2rem',
-                                                marginBottom: '1rem',
-                                                cursor: 'pointer'
-                                            }}
-                                            onClick={() => {
-                                                setHasSeen(item._id);
-                                                if (
-                                                    item.type === 'comment' ||
-                                                    item.type ===
-                                                        'has a new post'
-                                                ) {
-                                                    navigate(
-                                                        `/post-page?id=${item.id}`
-                                                    );
-                                                } else if (
-                                                    item.type === 'answer'
-                                                ) {
-                                                    navigate(
-                                                        `/question-page?id=${item.id}`
-                                                    );
-                                                } else {
-                                                    navigate(
-                                                        `/teams/${item.from}`
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            <p>
-                                                {item.type === 'comment' ? (
-                                                    <>
-                                                        Someone {item.type} your
-                                                        post
-                                                    </>
-                                                ) : item.type ===
-                                                  'has a new post' ? (
-                                                    <>Someone {item.type}</>
-                                                ) : (
-                                                    <>
-                                                        Someone {item.type} your
-                                                        question
-                                                    </>
-                                                )}
-                                                <div
-                                                    style={{
-                                                        borderRadius: '50%',
-                                                        backgroundColor:
-                                                            item.hasSeen
-                                                                ? 'gray'
-                                                                : 'aqua',
-                                                        width: '.6rem',
-                                                        height: '.6rem',
-                                                        position: 'relative',
-                                                        top: '-1rem',
-                                                        left: '16.9rem'
-                                                    }}
-                                                ></div>
-                                            </p>
+                            {listNotifications.length === 0
+                                ? 'Bạn không có thông báo!'
+                                : listNotifications.map((item, index) => {
+                                      return (
+                                          <div key={index}>
+                                              <IconButton
+                                                  style={{
+                                                      position: 'relative',
+                                                      left: '85%',
+                                                      top: '4rem',
+                                                      color: 'red',
+                                                      cursor: 'pointer'
+                                                  }}
+                                              >
+                                                  <i
+                                                      className="fa-solid fa-trash-can-xmark"
+                                                      onClick={() => {
+                                                          if (
+                                                              window.confirm(
+                                                                  'Bạn có chắc chắn muốn xóa thông báo này?'
+                                                              )
+                                                          ) {
+                                                              handleDeleteNotification(
+                                                                  item
+                                                              );
+                                                          }
+                                                      }}
+                                                  ></i>
+                                              </IconButton>
+                                              <Paper
+                                                  elevation={4}
+                                                  style={{
+                                                      padding: '1rem 2rem',
+                                                      marginBottom: '1rem',
+                                                      cursor: 'pointer'
+                                                  }}
+                                                  onClick={() => {
+                                                      setHasSeen(item._id);
+                                                      if (
+                                                          item.type ===
+                                                              'comment' ||
+                                                          item.type ===
+                                                              'has a new post'
+                                                      ) {
+                                                          navigate(
+                                                              `/post-page?id=${item.id}`
+                                                          );
+                                                      } else if (
+                                                          item.type === 'answer'
+                                                      ) {
+                                                          navigate(
+                                                              `/question-page?id=${item.id}`
+                                                          );
+                                                      } else {
+                                                          navigate(
+                                                              `/teams/${item.from}`
+                                                          );
+                                                      }
+                                                  }}
+                                              >
+                                                  <p style={{width: '50%'}}>
+                                                      {item.type ===
+                                                      'comment' ? (
+                                                          <>
+                                                              Someone{' '}
+                                                              {item.type} your
+                                                              post
+                                                          </>
+                                                      ) : item.type ===
+                                                        'has a new post' ? (
+                                                          <>
+                                                              Someone{' '}
+                                                              {item.type}
+                                                          </>
+                                                      ) : item.type ===
+                                                        'teamMember' ? (
+                                                          <>
+                                                              You have been
+                                                              added to a team. Role: {item.id}
+                                                          </>
+                                                      ) : item.type === 'teamRole' ? (
+                                                        <>
+                                                            Your role has been updated to {item.id}
+                                                        </>
+                                                      ) : (
+                                                          <>
+                                                              Someone{' '}
+                                                              {item.type} your
+                                                              question
+                                                          </>
+                                                      )}
+                                                      <div
+                                                          style={{
+                                                              borderRadius:
+                                                                  '50%',
+                                                              backgroundColor:
+                                                                  item.hasSeen
+                                                                      ? 'gray'
+                                                                      : 'aqua',
+                                                              width: '.6rem',
+                                                              height: '.6rem',
+                                                              position:
+                                                                  'relative',
+                                                              top: '-2.5rem',
+                                                              left: '16.9rem'
+                                                          }}
+                                                      ></div>
+                                                  </p>
 
-                                            <p>{FormatDate(item.date)}</p>
-                                        </Paper>
-                                    </div>
-                                );
-                            })}
+                                                  <p>{FormatDate(item.date)}</p>
+                                              </Paper>
+                                          </div>
+                                      );
+                                  })}
                         </>
                     )}
                 </Box>

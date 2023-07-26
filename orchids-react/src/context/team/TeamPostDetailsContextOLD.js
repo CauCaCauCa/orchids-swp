@@ -24,8 +24,8 @@ export default function TeamPostDetailsContextProvider({ children }) {
     const isMember = useMemo(() => {
         return (
             team.EmailOwner === localStorage.getItem('email') ||
-            team.EmailOwner.email === localStorage.getItem('email') ||
-            team.ListEmailMember.includes(localStorage.getItem('email'))
+            team.EmailOwner.email === localStorage.getItem('email') || 
+            team.ListEmailMember.some(obj => obj.email === localStorage.getItem('email'))
         );
     }, [team]);
 
@@ -58,6 +58,7 @@ export default function TeamPostDetailsContextProvider({ children }) {
                         <PostPage
                             PostData={{ ...data, username: team.teamname, avatar: team.avatar }}
                             isAllowedEdits={isMember}
+                            isTeam
                         />
                     </div>
                 </div>

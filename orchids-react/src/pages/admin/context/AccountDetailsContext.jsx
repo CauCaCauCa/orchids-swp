@@ -106,14 +106,14 @@ export default function AccountDetailsProvider({ children }) {
                                     variant="outlined"
                                     sx={{
                                         p: 2,
-                                        bgcolor: current.status
+                                        bgcolor: current.status === 'true'
                                             ? 'green'
                                             : 'red',
                                         color: 'white'
                                     }}
                                 >
                                     Status:{' '}
-                                    {current.status
+                                    {current.status === 'true'
                                         ? 'activated'
                                         : 'deactivated'}
                                 </Paper>
