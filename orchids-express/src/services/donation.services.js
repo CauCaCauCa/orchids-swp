@@ -24,7 +24,7 @@ async function connect(databaseName, collectionName) {
 // Get account information
 async function GetListDonation(amount, sortDirection) {
     const { collection, close } = await connect('orchids-1', 'donation');
-    const result = await collection.find().sort({ 'vnd': sortDirection }).limit(amount).toArray();
+    const result = await collection.find().limit(amount).toArray();
     close();
     return result;
 }
