@@ -1,7 +1,10 @@
 const { Post, Comment } = require('../modules/post.module');
 const { connect, getPostsCollection } = require('../configs/MongoDB');
 const { ObjectId } = require('mongodb');
-const { createNotificationToTeamAdmins } = require('./notification.services');
+const {
+    createNotificationToTeamAdmins,
+    createNotificationToPersonal
+} = require('./notification.services');
 
 // Get create post
 async function CreatePost(post, emailCreator) {
@@ -97,8 +100,7 @@ async function CommentPost(postId, email, comment) {
     if (post.isTeam) {
         createNotificationToTeamAdmins(post.emailCreator, 'comment', postId);
     } else {
-        if (!post.isTeam)
-            createNotificationToPersonal(email, postId, 'comment');
+        createNotificationToPersonal(email, postId, 'comment');
     }
     return {
         ...result,

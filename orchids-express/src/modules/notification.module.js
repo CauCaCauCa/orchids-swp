@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
 const { getPostsCollection } = require('../configs/MongoDB');
-const { GetPostInfoForLoadPage } = require('../services/post.services');
+// const { GetPostInfoForLoadPage } = require('../services/post.services');
 const { GetQuestionByID } = require('../services/question.services');
 
 // allow is a flag. If allow is true, then we'll allow this module to fetch data
@@ -18,9 +18,10 @@ module.exports = async function Notification(obj, allow = true) {
             var QUESTION = await GetQuestionByID(obj.id);
         }
         to = POST?.emailCreator || QUESTION?.creatorEmail;
+    } else {
+        to = obj.to;
     }
     
-    to = obj.to;
     var type = obj.type;
     var id = obj.id; // id of post or question
 

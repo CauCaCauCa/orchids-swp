@@ -25,8 +25,8 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
 
     const { openConfirm } = useContext(ConfirmContext);
 
-    const { showSuccess, showError, showInfo } =
-        useContext(NotificationContext);
+    // const { showSuccess, showError, showInfo } =
+    //     useContext(NotificationContext);
 
     const navigate = useNavigate();
 
@@ -89,7 +89,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
 
     function like() {
         if (localStorage.getItem('email') == null) {
-            showInfo('Bạn cần đăng nhập để thực hiện chức năng này.');
+            alert('Bạn cần đăng nhập để thực hiện chức năng này.');
             return;
         }
         if (isLiked == false) {
@@ -98,9 +98,9 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 if (res.acknowledged == true) {
                     post.ListEmailLiked.push(localStorage.getItem('email'));
                     setLikeAmount(likeAmount + 1);
-                    showSuccess('Liked successfully!');
+                    alert('Liked successfully!');
                 } else {
-                    showError('Failed to like post. Please try again later.');
+                    alert('Failed to like post. Please try again later.');
                 }
             });
         } else {
@@ -109,9 +109,9 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 if (res.acknowledged == true) {
                     post.ListEmailLiked.pop(localStorage.getItem('email'));
                     setLikeAmount(likeAmount - 1);
-                    showSuccess('Unliked successfully!');
+                    alert('Unliked successfully!');
                 } else {
-                    showError('Failed to unlike post. Please try again later.');
+                    alert('Failed to unlike post. Please try again later.');
                 }
             });
         }
@@ -127,7 +127,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 ).ListEmailLiked.push(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                showError('like fail');
+                alert('like fail');
             }
         });
     }
@@ -142,7 +142,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                 ).ListEmailLiked.pop(localStorage.getItem('email'));
                 setPost({ ...post });
             } else {
-                showError('unlike fail');
+                alert('unlike fail');
             }
         });
     }
@@ -152,11 +152,11 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
             .writeText(text)
             .then(() => {
                 console.log('Text copied to clipboard');
-                showSuccess('Copy thành công.');
+                alert('Copy thành công.');
             })
             .catch((error) => {
                 console.error('Failed to copy text to clipboard:', error);
-                showError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+                alert('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
             });
     }
 
@@ -362,7 +362,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                                                                                 res.acknowledged ==
                                                                                 true
                                                                             ) {
-                                                                                showSuccess(
+                                                                                alert(
                                                                                     'Comment deleted successfully.'
                                                                                 );
                                                                                 var newCommentList =
@@ -383,7 +383,7 @@ export default function PostPage({ PostData, isAllowedEdits = false, isTeam = fa
                                                                                     }
                                                                                 );
                                                                             } else {
-                                                                                showError(
+                                                                                alert(
                                                                                     'Failed to delete comment. Please try again.'
                                                                                 );
                                                                             }

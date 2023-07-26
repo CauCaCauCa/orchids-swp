@@ -213,7 +213,7 @@ export default function Team() {
                                         Số lượng thành viên:{' '}
                                         <strong>
                                             {currentTeam.ListEmailMember
-                                                .length || 0}
+                                                .length + 1 || 1}
                                         </strong>
                                     </span>
                                 </Typography>

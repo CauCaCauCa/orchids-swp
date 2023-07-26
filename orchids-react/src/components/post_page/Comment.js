@@ -6,17 +6,17 @@ import { NotificationContext } from '../../context/NotificationContext';
 
 export default function Comment({ postId, setPost, post }) {
     const [commentText, setCommentText] = useState('');
-    const { showSuccess, showError, showInfo } =
-        useContext(NotificationContext);
+    // const { showSuccess, showError, showInfo } =
+    //     useContext(NotificationContext);
 
     const handleCommentSubmit = () => {
         if (localStorage.getItem('email') === null)
-            return showInfo('Bạn cần đăng nhập để bình luận!');
+            return alert('Bạn cần đăng nhập để bình luận!');
 
         if (commentText !== '') {
             CommentPost(postId, commentText).then((res) => {
                 if (res.acknowledged === true) {
-                    showSuccess('Comment successfully!');
+                    alert('Comment successfully!');
                     setCommentText('');
                     quillRef.current.root.innerHTML = '';
                     post.ListComment.push({
@@ -31,11 +31,11 @@ export default function Comment({ postId, setPost, post }) {
                     });
                     setPost({ ...post });
                 } else {
-                    showError('Comment fail!');
+                    alert('Comment fail!');
                 }
             });
         } else {
-            showInfo('Please enter a comment');
+            alert('Please enter a comment');
         }
     };
 

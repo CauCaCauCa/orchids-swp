@@ -139,13 +139,15 @@ export default function NotificationPopup({ children }) {
                                                   <i
                                                       className="fa-solid fa-trash-can-xmark"
                                                       onClick={() => {
-                                                          openConfirm(
-                                                              'Are you sure you wish to delete this item?',
-                                                              () =>
-                                                                  handleDeleteNotification(
-                                                                      item
-                                                                  )
-                                                          );
+                                                          if (
+                                                              window.confirm(
+                                                                  'Bạn có chắc chắn muốn xóa thông báo này?'
+                                                              )
+                                                          ) {
+                                                              handleDeleteNotification(
+                                                                  item
+                                                              );
+                                                          }
                                                       }}
                                                   ></i>
                                               </IconButton>

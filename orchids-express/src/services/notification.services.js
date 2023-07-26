@@ -12,7 +12,8 @@ async function createNotificationToPersonal(from, Id, type) {
         from: from,
         type: type,
         id: Id
-    });
+    }, true);
+    console.log(notification);
     if (notification.from !== notification.to) {
         const { collection, close } = await connect(
             'orchids-1',
@@ -37,6 +38,7 @@ async function createNotificationToFollowers(from, Id, type) {
         listTo = result[0].ListEmailFollower;
         close2();
     } else {
+        console.log('from: ' + from);
         var result = await getAccountInfoByEmail(from);
         listTo = result.ListEmailFollower;
     }

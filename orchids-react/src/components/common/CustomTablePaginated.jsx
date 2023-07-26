@@ -7,7 +7,8 @@ import {
     TableContainer,
     TableHead,
     TablePagination,
-    TableRow
+    TableRow,
+    Tooltip
 } from '@mui/material';
 import { DEFAULT_PAGE_SIZE } from '../../pages/admin/config/pageConfig';
 import { useEffect, useState } from 'react';
@@ -78,37 +79,47 @@ export default function CustomTablePaginated({
                                     page * DEFAULT_PAGE_SIZE + DEFAULT_PAGE_SIZE
                                 )
                                 .map((row, index) => (
-                                    <TableRow key={row._id}>
-                                        <TableCell width={10}>
-                                            {index +
-                                                1 +
-                                                page * DEFAULT_PAGE_SIZE}
-                                        </TableCell>
-                                        {columns.map((column) => (
-                                            <TableCell
-                                                key={column.id}
-                                                width={column.minWidth}
-                                                onClick={
-                                                    column.handleClick
-                                                        ? () =>
-                                                              column.handleClick(
-                                                                  row
-                                                              )
-                                                        : null
-                                                }
-                                                sx={{
-                                                    cursor: column.handleClick
-                                                        ? 'pointer'
-                                                        : 'default'
-                                                }}
-                                            >
-                                                {column.component(row)}
+                                    <Tooltip title={row.status === 'false' ? 'Deactivated' : null}>
+                                        <TableRow
+                                            key={row._id}
+                                            sx={{
+                                                bgcolor:
+                                                    row.status === 'false'
+                                                        ? 'rgb(255, 175, 175)'
+                                                        : 'initial'
+                                            }}
+                                        >
+                                            <TableCell width={10}>
+                                                {index +
+                                                    1 +
+                                                    page * DEFAULT_PAGE_SIZE}
                                             </TableCell>
-                                        ))}
-                                        <TableCell width="50">
-                                            <Actions row={row} />
-                                        </TableCell>
-                                    </TableRow>
+                                            {columns.map((column) => (
+                                                <TableCell
+                                                    key={column.id}
+                                                    width={column.minWidth}
+                                                    onClick={
+                                                        column.handleClick
+                                                            ? () =>
+                                                                  column.handleClick(
+                                                                      row
+                                                                  )
+                                                            : null
+                                                    }
+                                                    sx={{
+                                                        cursor: column.handleClick
+                                                            ? 'pointer'
+                                                            : 'default'
+                                                    }}
+                                                >
+                                                    {column.component(row)}
+                                                </TableCell>
+                                            ))}
+                                            <TableCell width="50">
+                                                <Actions row={row} />
+                                            </TableCell>
+                                        </TableRow>
+                                    </Tooltip>
                                 ))}
                         </>
                     )}
