@@ -161,12 +161,7 @@ async function addMember(teamEmail, memberEmail, role) {
     AccountService.addEmailToTeamAttendList(memberEmail, teamEmail);
     close();
 
-    await notifyAccountAddToTeamMember(
-        teamEmail,
-        memberEmail,
-        teamEmail,
-        'teamMember'
-    );
+    await notifyAccountAddToTeamMember(teamEmail, memberEmail, role);
 
     return result;
 }
@@ -216,6 +211,9 @@ async function updateMemberRole(teamEmail, memberEmail, role, caller) {
     );
 
     close();
+
+    notifyAccountUpdateRole(teamEmail, memberEmail, role);
+
     return result;
 }
 
@@ -602,14 +600,32 @@ async function deleteAllPostsByTeam(teamEmail) {
     return result;
 }
 
-async function notifyAccountAddToTeamMember(from, to, Id, type) {
+async function notifyAccountAddToTeamMember(from, to, role) {
     const { collection, close } = await connect('orchids-1', 'notification');
 
     var notification = {
         from: from,
         to: to,
-        type: type,
-        id: Id,
+        type: 'teamMember',
+        id: role,
+        date: Date.now(),
+        hasSeen: false
+    };
+    if (notification.from !== notification.to) {
+        await collection.insertOne(notification);
+    }
+
+    close();
+}
+
+async function notifyAccountUpdateRole(from, to, role) {
+    const { collection, close } = await connect('orchids-1', 'notification');
+
+    var notification = {
+        from: from,
+        to: to,
+        type: 'teamRole',
+        id: role,
         date: Date.now(),
         hasSeen: false
     };

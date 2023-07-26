@@ -182,7 +182,7 @@ export default function NotificationPopup({ children }) {
                                                       }
                                                   }}
                                               >
-                                                  <p>
+                                                  <p style={{width: '50%'}}>
                                                       {item.type ===
                                                       'comment' ? (
                                                           <>
@@ -200,8 +200,12 @@ export default function NotificationPopup({ children }) {
                                                         'teamMember' ? (
                                                           <>
                                                               You have been
-                                                              added to a team
+                                                              added to a team. Role: {item.id}
                                                           </>
+                                                      ) : item.type === 'teamRole' ? (
+                                                        <>
+                                                            Your role has been updated to {item.id}
+                                                        </>
                                                       ) : (
                                                           <>
                                                               Someone{' '}
@@ -221,7 +225,7 @@ export default function NotificationPopup({ children }) {
                                                               height: '.6rem',
                                                               position:
                                                                   'relative',
-                                                              top: '-1rem',
+                                                              top: '-2.5rem',
                                                               left: '16.9rem'
                                                           }}
                                                       ></div>
