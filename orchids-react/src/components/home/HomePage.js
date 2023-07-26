@@ -24,6 +24,7 @@ import {
     CardActionArea,
     CardContent,
     CardMedia,
+    Tooltip,
     Typography
 } from '@mui/material';
 import IconImage from '../common/IconImage';
@@ -126,22 +127,26 @@ export default function HomePage({ isLogin, setIsLogin }) {
                             justifyContent: 'flex-start'
                         }}
                     >
-                        <CardContent
-                            sx={{
-                                width: '70%',
-                                p: 2,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center'
-                            }}
-                        >
-                            <Typography fontSize="1rem" fontWeight={500}>
-                                {post.title}
-                            </Typography>
-                            <Typography variant="caption">
-                                {post.view || 0} lượt xem
-                            </Typography>
-                        </CardContent>
+                        <Tooltip title={post.title} placement="left">
+                            <CardContent
+                                sx={{
+                                    width: '70%',
+                                    p: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Typography fontSize="1rem" fontWeight={700}>
+                                    {post.title.length < 25
+                                        ? post.title
+                                        : post.title.slice(0, 25) + '...'}
+                                </Typography>
+                                <Typography variant="caption">
+                                    {post.view || 0} lượt xem
+                                </Typography>
+                            </CardContent>
+                        </Tooltip>
                     </Box>
                 </CardActionArea>
             </Card>
@@ -158,42 +163,47 @@ export default function HomePage({ isLogin, setIsLogin }) {
                 sx={{ height: '70px', width: '100%', p: 0, bgcolor: '#f0f2f5' }}
                 onClick={() => navigate(`/teams/${team.email}`)}
             >
-                <CardActionArea sx={{ height: '100%', width: '100%' }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            height: '100%',
-                            width: '100%',
-                            gap: 1,
-                            justifyContent: 'flex-start'
-                        }}
-                    >
-                        <IconImage
-                            src={team.avatar}
+                <Tooltip title={team.teamname} placement="left">
+                    <CardActionArea sx={{ height: '100%', width: '100%' }}>
+                        <Box
                             sx={{
-                                height: '100%',
-                                width: '100px',
-                                objectFit: 'cover'
-                            }}
-                        />
-                        <CardContent
-                            sx={{
-                                width: '70%',
-                                p: 2,
                                 display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center'
+                                height: '100%',
+                                width: '100%',
+                                gap: 1,
+                                justifyContent: 'flex-start'
                             }}
                         >
-                            <Typography fontSize="1rem" fontWeight={500}>
-                                {team.teamname}
-                            </Typography>
-                            <Typography variant="caption">
-                                {team.ListEmailFollower?.length} người theo dõi
-                            </Typography>
-                        </CardContent>
-                    </Box>
-                </CardActionArea>
+                            <IconImage
+                                src={team.avatar}
+                                sx={{
+                                    height: '100%',
+                                    width: '100px',
+                                    objectFit: 'cover'
+                                }}
+                            />
+                            <CardContent
+                                sx={{
+                                    width: '70%',
+                                    p: 2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <Typography fontSize="1rem" fontWeight={700}>
+                                    {team.teamname.length < 15
+                                        ? team.teamname
+                                        : team.teamname.slice(0, 15) + '...'}
+                                </Typography>
+                                <Typography variant="caption">
+                                    {team.ListEmailFollower?.length} người theo
+                                    dõi
+                                </Typography>
+                            </CardContent>
+                        </Box>
+                    </CardActionArea>
+                </Tooltip>
             </Card>
         );
     }
@@ -355,6 +365,7 @@ export default function HomePage({ isLogin, setIsLogin }) {
                                     return <TeamCardMini team={team} />;
                                 })}
                             </Box>
+                            <Box height="30px"></Box>
                         </>
                     ) : (
                         <></>
