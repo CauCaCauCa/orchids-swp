@@ -16,7 +16,6 @@ import {
 } from '../../api/questionAPI';
 import { useNavigate } from 'react-router-dom';
 import { NotificationContext } from '../../context/NotificationContext';
-import { ConfirmContext } from '../../context/ConfirmContext';
 
 export default function PopupShowCard({
     qcard,
@@ -28,7 +27,6 @@ export default function PopupShowCard({
     const navigate = useNavigate();
     const { showSuccess, showError, showInfo } =
         React.useContext(NotificationContext);
-    const { openConfirm } = React.useContext(ConfirmContext);
 
     function changeIsAnswerLoad() {
         setIsAnswerLoad(!isAnswerLoad);
@@ -200,46 +198,43 @@ export default function PopupShowCard({
                         <i
                             className="fa-solid fa-trash-can-xmark"
                             onClick={() => {
-                                openConfirm(
-                                    'Bạn chắc chắn muốn xóa câu hỏi này?',
-                                    () =>
-                                        DeleteQuestion(qcard._id).then(
-                                            (res) => {
-                                                console.log(res);
-                                                if (
-                                                    res.acknowledged === true &&
-                                                    res.deletedCount === 1
-                                                ) {
-                                                    showSuccess(
-                                                        'Xóa câu hỏi thành công'
-                                                    );
-                                                    setIsPopup(false);
-                                                    if (listQuestion) {
-                                                        // delete in list question
-                                                        listQuestion.forEach(
-                                                            (
-                                                                question,
-                                                                index
-                                                            ) => {
-                                                                if (
-                                                                    question._id ===
-                                                                    qcard._id
-                                                                ) {
-                                                                    listQuestion.splice(
-                                                                        index,
-                                                                        1
-                                                                    );
-                                                                }
-                                                            }
-                                                        );
-                                                        setListQuestion([
-                                                            ...listQuestion
-                                                        ]);
+                                if (
+                                    window.confirm(
+                                        'Bạn chắc chắn muốn xóa câu hỏi này?'
+                                    )
+                                ) {
+                                    DeleteQuestion(qcard._id).then((res) => {
+                                        console.log(res);
+                                        if (
+                                            res.acknowledged === true &&
+                                            res.deletedCount === 1
+                                        ) {
+                                            showSuccess(
+                                                'Xóa câu hỏi thành công'
+                                            );
+                                            setIsPopup(false);
+                                            if (listQuestion) {
+                                                // delete in list question
+                                                listQuestion.forEach(
+                                                    (question, index) => {
+                                                        if (
+                                                            question._id ===
+                                                            qcard._id
+                                                        ) {
+                                                            listQuestion.splice(
+                                                                index,
+                                                                1
+                                                            );
+                                                        }
                                                     }
-                                                }
+                                                );
+                                                setListQuestion([
+                                                    ...listQuestion
+                                                ]);
                                             }
-                                        )
-                                );
+                                        }
+                                    });
+                                }
                             }}
                             style={{
                                 marginLeft: '1rem',
