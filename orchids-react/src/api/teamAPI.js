@@ -1,4 +1,4 @@
-import { fetchAPI } from "./templateAPI";
+import { fetchAPI } from './templateAPI';
 
 // #region Team admin functions _ require token
 export async function CreateTeam(teamname, description, bground, avatar) {
@@ -7,7 +7,7 @@ export async function CreateTeam(teamname, description, bground, avatar) {
         uri: '/team/create',
         Headers: {
             'Content-Type': 'application/json',
-            "authorization": localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             teamname,
@@ -23,19 +23,25 @@ export async function DeleteTeam(teamEmail) {
         method: 'DELETE',
         uri: `/team/delete/${teamEmail}`,
         Headers: {
-            "authorization": localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: undefined
     });
 }
 
-export async function UpdateTeam(teamEmail, teamname, description, bground, avatar) {
+export async function UpdateTeam(
+    teamEmail,
+    teamname,
+    description,
+    bground,
+    avatar
+) {
     return fetchAPI({
         method: 'PUT',
         uri: `/team/update/${teamEmail}`,
         Headers: {
             'Content-Type': 'application/json',
-            "authorization": localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             teamname,
@@ -53,7 +59,7 @@ export async function AddMemberToTeam(teamEmail, memberEmail, role) {
         uri: `/team/${teamEmail}/create/member`,
         Headers: {
             'Content-Type': 'application/json',
-            "authorization": localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             memberEmail,
@@ -67,8 +73,8 @@ export async function RemoveMemberFromTeam(teamEmail, memberEmail) {
         method: 'DELETE',
         uri: `/team/${teamEmail}/delete/member`,
         Headers: {
-            "Content-Type": "application/json",
-            "authorization": localStorage.getItem('token')
+            'Content-Type': 'application/json',
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             memberEmail
@@ -81,14 +87,14 @@ export async function UpdateMemberFromTeam(teamEmail, memberEmail, role) {
         method: 'PUT',
         uri: `/team/${teamEmail}/update/member`,
         Headers: {
-            "Content-Type": "application/json",
-            "authorization": localStorage.getItem('token')
+            'Content-Type': 'application/json',
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             memberEmail,
             role
         })
-    })
+    });
 }
 // #endregion
 
@@ -98,7 +104,7 @@ export async function GetTeam(teamEmail) {
         uri: `/team/fetch/one/${teamEmail}`,
         Headers: undefined,
         body: undefined
-    })
+    });
 }
 
 export async function GetTeamRole(teamEmail) {
@@ -106,10 +112,10 @@ export async function GetTeamRole(teamEmail) {
         method: 'GET',
         uri: `/team/fetch/role/${teamEmail}`,
         Headers: {
-            'authorization': localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: undefined
-    })
+    });
 }
 
 export async function getMultipleTeams(teamEmails) {
@@ -120,9 +126,9 @@ export async function getMultipleTeams(teamEmails) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            teamEmails,
+            teamEmails
         })
-    })
+    });
 }
 
 export async function getSpecificTeamDetails(teamId) {
@@ -131,7 +137,7 @@ export async function getSpecificTeamDetails(teamId) {
         uri: `/team/fetch/${teamId}/populated`,
         Headers: undefined,
         body: undefined
-    })
+    });
 }
 
 export async function getSpecificTeamsByAccount() {
@@ -139,7 +145,7 @@ export async function getSpecificTeamsByAccount() {
         method: 'GET',
         uri: `/team/fetch/teams-by-account`,
         Headers: {
-            'authorization': localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: undefined
     });
@@ -151,14 +157,14 @@ export async function createTeamPost(teamEmail, title, content, bground) {
         uri: `/team/${teamEmail}/create/post`,
         Headers: {
             'Content-Type': 'application/json',
-            'authorization': localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: JSON.stringify({
             title,
             content,
             bground
         })
-    })
+    });
 }
 
 export async function getTeamPostsByTimestamp(teamEmail, timestamp) {
@@ -167,14 +173,14 @@ export async function getTeamPostsByTimestamp(teamEmail, timestamp) {
         uri: `/team/${teamEmail}/fetch/post?date=${timestamp}`,
         Headers: undefined,
         body: undefined
-    })
+    });
 }
 
 export async function getTeamPostsByTimestampDefault(teamEmail) {
     return fetchAPI({
         method: 'GET',
         uri: `/team/${teamEmail}/fetch/post`
-    })
+    });
 }
 
 export async function getAllTeams() {
@@ -183,21 +189,20 @@ export async function getAllTeams() {
         uri: '/team/fetch/all',
         Headers: undefined,
         body: undefined
-    })
+    });
 }
 
 export async function getListTeamInfoByEmails(listEmailTeam) {
     return fetchAPI({
         method: 'POST',
-        uri: "/team/get-list-info-team-by-emails",
+        uri: '/team/get-list-info-team-by-emails',
         Headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             listEmailTeam
-
         })
-    })
+    });
 }
 
 export async function leaveTeam(teamEmail) {
@@ -205,10 +210,10 @@ export async function leaveTeam(teamEmail) {
         method: 'DELETE',
         uri: `/team/${teamEmail}/leave`,
         Headers: {
-            'authorization': localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
         },
         body: undefined
-    })
+    });
 }
 
 export async function toggleFollowTeam(teamEmail) {
@@ -216,9 +221,9 @@ export async function toggleFollowTeam(teamEmail) {
         method: 'POST',
         uri: `/team/${teamEmail}/toggle-follow`,
         Headers: {
-            'authorization': localStorage.getItem('token')
-        },
-    })
+            authorization: localStorage.getItem('token')
+        }
+    });
 }
 
 export async function deleteTeam(teamEmail) {
@@ -226,7 +231,17 @@ export async function deleteTeam(teamEmail) {
         method: 'DELETE',
         uri: `/team/${teamEmail}/delete-team`,
         Headers: {
-            'authorization': localStorage.getItem('token')
+            authorization: localStorage.getItem('token')
+        }
+    });
+}
+
+export async function deleteTeamPost(teamEmail, postId) {
+    return fetchAPI({
+        method: 'DELETE',
+        Headers: {
+            authorization: localStorage.getItem('token')
         },
-    })
+        uri: `/team/${teamEmail}/delete/post/${postId}`
+    });
 }

@@ -6,6 +6,8 @@ import { DeletePost, GetPostInfo, UpdatePost } from '../../api/postAPI';
 import Login from '../personal/Login';
 import { NotificationContext } from '../../context/NotificationContext';
 import { ConfirmContext } from '../../context/ConfirmContext';
+import { el } from 'date-fns/locale';
+import { deleteTeamPost } from '../../api/teamAPI';
 
 export default function UpdatePostPage() {
     const [isLogin, setIsLogin] = React.useState(
@@ -27,6 +29,7 @@ function EditPost() {
     const [previewUrl, setPreviewUrl] = useState('');
     const [title, setTitle] = useState('');
     const [postId, setPostId] = useState('');
+    const [post, setPost] = useState();
 
     // load comp editor
     useEffect(() => {
@@ -48,6 +51,7 @@ function EditPost() {
                 setTitle(res.title);
                 setContent(res.content);
                 setPreviewUrl(res.bground);
+                setPost(res);
                 quillRef.current.root.innerHTML = res.content;
             });
         }
@@ -90,7 +94,11 @@ function EditPost() {
                         res.matchedCount === 1
                     ) {
                         showSuccess('Post updated successfully.');
-                        navigate('/personal');
+                        if (post.isTeam) {
+                            navigate(`/teams/${post.emailCreator}`);
+                        } else {
+                            navigate('/personal');
+                        }
                     } else {
                         showError('Failed to update post.');
                     }
@@ -104,17 +112,28 @@ function EditPost() {
     };
 
     const handleDelete = () => {
-        
         openConfirm('Are you sure you want to delete this post?', () => {
-            DeletePost(postId).then((res) => {
-                console.log(res);
-                if (res.acknowledged === true && res.deletedCount === 1) {
-                    showSuccess('Post deleted successfully.');
-                    navigate('/personal');
-                } else {
-                    showError('Failed to delete post.');
-                }
-            });
+            if (post.isTeam) {
+                deleteTeamPost(post.emailCreator, post._id).then((res) => {
+                    console.log(res);
+                    if (res.acknowledged === true && res.modifiedCount === 1) {
+                        showSuccess('Post deleted successfully.');
+                        navigate(`/teams/${post.emailCreator}`);
+                    } else {
+                        showError('Failed to delete post.');
+                    }
+                });
+            } else {
+                DeletePost(postId).then((res) => {
+                    console.log(res);
+                    if (res.acknowledged === true && res.deletedCount === 1) {
+                        showSuccess('Post deleted successfully.');
+                        navigate('/personal');
+                    } else {
+                        showError('Failed to delete post.');
+                    }
+                });
+            }
         });
     };
 

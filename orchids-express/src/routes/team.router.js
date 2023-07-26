@@ -389,4 +389,18 @@ router.delete('/:teamEmail/delete-team', sessionKeyAuth.CheckTimeoutToken, owner
     }
 })
 
+router.delete('/:teamEmail/delete/post/:postId', sessionKeyAuth.CheckTimeoutToken, ownership.isMemberOfTeam, async (req, res) => {
+    Logger.log("DELETE POST");
+    try {
+        const teamEmail = req.params.teamEmail;
+        const postId = req.params.postId;
+        const callerEmail = sessionKeyAuth.getEmailFromToken(req, res);
+        const result = await teamService.deleteTeamPost(postId, teamEmail, callerEmail);
+        res.status(200).send(result);
+    } catch(error) {
+        Logger.error(error);
+        res.status(400).send(error.message);
+    }
+})
+
 module.exports = router

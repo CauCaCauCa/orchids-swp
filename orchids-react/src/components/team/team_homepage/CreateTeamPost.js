@@ -1,18 +1,28 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, useMediaQuery, Typography, IconButton } from '@mui/material';
+import {
+    Box,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField,
+    Button,
+    useMediaQuery,
+    Typography,
+    IconButton
+} from '@mui/material';
 import Quill from 'quill';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import EditImageOverlay from '../../common/EditImageOverlay';
 import IconImage from '../../common/IconImage';
 import { FileUploader } from 'react-drag-drop-files';
-import { createTeamPost } from '../../../api/teamAPI';
 import { NotificationContext } from '../../../context/NotificationContext';
 import { TeamPostContext } from '../../../context/team/TeamPostsContextProvider';
 
 export default function CreateTeamPost({ open, setOpen, teamEmail }) {
-
     // used solely to load the quill. without this, quill loads on close only
     const [isDialogOpen, setIsDialogOpen] = useState(open);
     const { addPost } = useContext(TeamPostContext);
+    const { showError } = useContext(NotificationContext);
 
     const editorRef = useRef(null);
     const quillRef = useRef(null);
@@ -24,31 +34,34 @@ export default function CreateTeamPost({ open, setOpen, teamEmail }) {
 
     // post components
     const [content, setContent] = useState('');
-    const [previewUrl, setPreviewUrl] = useState("/img/user-placeholder.png");
+    const [previewUrl, setPreviewUrl] = useState('/img/user-placeholder.png');
     const [title, setTitle] = useState('');
 
     // handles
     const handleEditImage = () => {
         setOpenSelectImage(true);
-    }
+    };
 
     const handleSubmit = () => {
+        if (title === '' || content === '' || !previewUrl) {
+            showError('Vui lòng điền đầy đủ thông tin');
+            return;
+        }
         addPost(title, content, previewUrl);
         setOpen(false);
-    }
+    };
 
     const handleFileChange = (files) => {
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreviewUrl(reader.result);
-        }
+        };
         reader.readAsDataURL(files);
-    }
+    };
 
     useEffect(() => {
         if (open && editorRef.current) {
-            quillRef.current = new Quill(
-                editorRef.current, {
+            quillRef.current = new Quill(editorRef.current, {
                 theme: 'snow',
                 placeholder: 'Enter your text...'
             });
@@ -59,48 +72,81 @@ export default function CreateTeamPost({ open, setOpen, teamEmail }) {
 
         return () => {
             if (quillRef.current) {
-                quillRef.current.off('text-change')
+                quillRef.current.off('text-change');
                 quillRef.current = null;
             }
-        }
-    }, [isDialogOpen, open])
+        };
+    }, [isDialogOpen, open]);
 
     useEffect(() => {
         setIsDialogOpen(open);
-    }, [open])
+    }, [open]);
 
     useEffect(() => {
         return () => {
             setContent('');
-            setPreviewUrl("/img/user-placeholder.png");
+            setPreviewUrl('/img/user-placeholder.png');
             setTitle('');
-        }
-    }, [isDialogOpen])
+        };
+    }, [isDialogOpen]);
 
     return (
         <>
-            <Dialog open={open} onClose={() => setOpen(false)} fullScreen={isMobile} maxWidth>
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                fullScreen={isMobile}
+                maxWidth
+            >
                 <DialogTitle display="flex" alignItems="center">
-                    <Typography variant='h6' fontWeight={900} flexGrow={1}>Tạo bài đăng</Typography>
-                    <IconButton onClick={() => setOpen(false)}><i class="fa fa-times" aria-hidden="true"></i></IconButton>
+                    <Typography variant="h6" fontWeight={900} flexGrow={1}>
+                        Tạo bài đăng
+                    </Typography>
+                    <IconButton onClick={() => setOpen(false)}>
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
                     <Box position="relative" mb={2}>
-                        <EditImageOverlay handle={handleEditImage} sx={{ width: "750px", height: "300px" }}>
-                            <IconImage src={previewUrl} alt="preview" sx={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px" }} />
+                        <EditImageOverlay
+                            handle={handleEditImage}
+                            sx={{ width: '750px', height: '300px' }}
+                        >
+                            <IconImage
+                                src={previewUrl}
+                                alt="preview"
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    borderRadius: '10px'
+                                }}
+                            />
                         </EditImageOverlay>
                     </Box>
                     <Box display="flex" flexDirection="column" gap="1">
-                        <TextField fullWidth label="Tiêu đề" variant="outlined" onChange={(e) => setTitle(e.target.value)} value={title} sx={{ mb: "1rem" }} />
+                        <TextField
+                            fullWidth
+                            label="Tiêu đề"
+                            variant="outlined"
+                            onChange={(e) => setTitle(e.target.value)}
+                            value={title}
+                            sx={{ mb: '1rem' }}
+                        />
                         <div ref={editorRef} />
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" onClick={handleSubmit}>Đăng</Button>
+                    <Button variant="contained" onClick={handleSubmit}>
+                        Đăng
+                    </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={openSelectImage} onClose={() => setOpenSelectImage(false)}>
-                <Box sx={{ width: "100%", height: "100%" }}>
+            <Dialog
+                open={openSelectImage}
+                onClose={() => setOpenSelectImage(false)}
+            >
+                <Box sx={{ width: '100%', height: '100%' }}>
                     <FileUploader
                         multiple={false}
                         handleChange={handleFileChange}
@@ -108,9 +154,11 @@ export default function CreateTeamPost({ open, setOpen, teamEmail }) {
                     />
                 </Box>
                 <DialogActions>
-                    <Button onClick={() => setOpenSelectImage(false)}>Finish</Button>
+                    <Button onClick={() => setOpenSelectImage(false)}>
+                        Finish
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>
-    )
+    );
 }

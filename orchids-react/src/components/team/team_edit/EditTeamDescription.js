@@ -44,10 +44,10 @@ export default function EditTeamDescription() {
     }
 
     return (
-        <Box>
+        <Box sx={{height: "100%"}}>
             <Typography variant="h5" fontWeight={900} mb={1}>Thông tin nhóm</Typography>
-            <Box component="form" onSubmit={handleSubmit} width="100%" height="100%" >
-                <Paper variant='outlined' square sx={{ overflowY: "auto", height: "300px", mb: "1rem", p: "3rem", display: "flex", flexDirection: "column", gap: "1rem", borderRadius: "10px" }}>
+            <Box component="form" onSubmit={handleSubmit} width="100%" height="100%" display="flex" gap={3} >
+                <Paper variant='outlined' square sx={{ flexGrow: 1, overflowY: "auto", height: "300px", mb: "1rem", p: "3rem", display: "flex", flexDirection: "column", gap: "1rem", borderRadius: "10px" }}>
                     <TextField variant="outlined" id="outlined-basic" label="Tên nhóm" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
                     <TextField id="outlined-basic" label="Mô tả" variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)} fullWidth multiline minRows={5} />
                     <Box>
@@ -65,7 +65,7 @@ export default function EditTeamDescription() {
                         </EditImageOverlay>
                     </Box>
                 </Paper>
-                <Button type='submit' variant="contained" color="primary">Chỉnh sửa</Button>
+                <Button type='submit' variant="contained" color="primary" sx={{height: "50px"}}>Chỉnh sửa</Button>
             </Box>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <Box sx={{ width: "100%", height: "100%" }}>

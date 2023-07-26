@@ -58,6 +58,7 @@ export default function TeamPostDetailsContextProvider({ children }) {
                         <PostPage
                             PostData={{ ...data, username: team.teamname, avatar: team.avatar }}
                             isAllowedEdits={isMember}
+                            isTeam
                         />
                     </div>
                 </div>

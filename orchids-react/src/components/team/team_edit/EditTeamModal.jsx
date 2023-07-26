@@ -51,7 +51,7 @@ export default function EditTeamModal({ open, setOpen }) {
                     style={style}
                     display="flex"
                     flexGrow={1}
-                    sx={{ width: '70%', height: '80%' }}
+                    sx={{ width: '70%', height: '70vh' }}
                 >
                     <Tabs
                         orientation="vertical"

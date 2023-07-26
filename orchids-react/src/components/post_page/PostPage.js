@@ -16,7 +16,8 @@ import Comment from './Comment';
 import { GetListUsernameByEmails } from '../../api/accountAPI';
 import { ConfirmContext } from '../../context/ConfirmContext';
 
-export default function PostPage({ PostData, isAllowedEdits = false }) {
+// POSTDATA can be string or object (string = id, object = full post)
+export default function PostPage({ PostData, isAllowedEdits = false, isTeam = false }) {
     const [post, setPost] = useState(null);
     const [likeAmount, setLikeAmount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
@@ -30,11 +31,28 @@ export default function PostPage({ PostData, isAllowedEdits = false }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!PostData) {
+        if(isTeam) {
+            const id = PostData._id;
+            GetPostInfo(id).then((res) => {
+                // check if user liked this post
+                if (
+                    res.ListEmailLiked.includes(localStorage.getItem('email'))
+                ) {
+                    setIsLiked(true);
+                }
+                setPost(res);
+                // get list username by emails
+                var list = res.ListComment.map((comment) => comment.email);
+                var uniqueList = [...new Set(list)];
+                GetListUsernameByEmails(uniqueList).then((res) => {
+                    setUsernameList(res);
+                });
+            });
+        } else if (!PostData) {
             // get id from url
             const urlParams = new URLSearchParams(window.location.search);
             window.scrollTo(0, 0);
-            const id = urlParams.get('id');
+            const id = urlParams.get('id') || PostData;
             // get post by id
             GetPostInfo(id).then((res) => {
                 // check if user liked this post

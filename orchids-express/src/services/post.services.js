@@ -1,6 +1,7 @@
 const { Post, Comment } = require('../modules/post.module');
 const { connect, getPostsCollection } = require('../configs/MongoDB');
 const { ObjectId } = require('mongodb');
+const { createNotificationToTeamAdmins } = require('./notification.services');
 
 // Get create post
 async function CreatePost(post, emailCreator) {
@@ -92,6 +93,13 @@ async function CommentPost(postId, email, comment) {
     const update = { $addToSet: { ListComment: { ...cmtFormat } } };
     var result = await collection.updateOne(query, update);
     close();
+    const post = await GetPostInfoForLoadPage(postId);
+    if (post.isTeam) {
+        createNotificationToTeamAdmins(post.emailCreator, 'comment', postId);
+    } else {
+        if (!post.isTeam)
+            createNotificationToPersonal(email, postId, 'comment');
+    }
     return {
         ...result,
         comment: cmtFormat
@@ -141,7 +149,7 @@ async function UnlikeCommentPost(postId, email, date, EmailLiker) {
 
 async function deleteAllPostsByTeam(teamEmail) {
     const { collection, close } = await getPostsCollection();
-    const result = await collection.deleteMany({emailCreator: teamEmail});
+    const result = await collection.deleteMany({ emailCreator: teamEmail });
     close();
     return result;
 }

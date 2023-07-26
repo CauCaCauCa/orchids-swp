@@ -27,7 +27,8 @@ async function createNotificationToPersonal(from, Id, type) {
 // create notification for followers when user post
 async function createNotificationToFollowers(from, Id, type) {
     const { collection, close } = await connect('orchids-1', 'notification');
-    const { collection: collection2, close: close2 } = await getTeamsCollection();
+    const { collection: collection2, close: close2 } =
+        await getTeamsCollection();
     // from : email of user who post
     // postId : id of post
     var listTo = [];
@@ -103,13 +104,63 @@ async function createNotificationToTeam(from, to, type) {
     }
 }
 
+async function createNotificationToTeamAdmins(teamEmail, type, id) {
+    const { collection, close } = await getTeamsCollection();
+
+    const team = (await collection.find({ email: teamEmail }).toArray())[0];
+    close();
+    if (!team) return;
+    const members = [
+        team.EmailOwner,
+        ...team.ListEmailMember.map((member) => member.email)
+    ];
+    console.log(members);
+    members.forEach(async (member) => {
+        console.log('Send notification to ' + member);
+        const response = await sendNotification(
+            team.email,
+            member,
+            type,
+            id,
+            false
+        );
+        console.log(response);
+        if (!response) {
+            console.log('Error when send notification to ' + member);
+        }
+    });
+}
+
+async function sendNotification(sender, receiver, type, id, allow = true) {
+    var notification = await Notification(
+        {
+            from: sender,
+            to: receiver,
+            type: type,
+            id: id
+        },
+        allow
+    );
+    console.log(notification);
+    if (notification.from !== notification.to) {
+        const { collection, close } = await connect(
+            'orchids-1',
+            'notification'
+        );
+        const result = await collection.insertOne(notification);
+        close();
+        return result;
+    }
+}
+
 module.exports = {
     createNotificationToPersonal,
     getNotifications,
     setHasSeen,
     deleteNotification,
     createNotificationToFollowers,
-    createNotificationToTeam
+    createNotificationToTeam,
+    createNotificationToTeamAdmins
 };
 
 // // !test

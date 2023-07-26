@@ -127,7 +127,7 @@ router.put('/comment-post', logAuth.CheckTimeoutToken, async (req, res) => {
     var postId = req.body.postId;
     var content = req.body.content;
     var result = await PostServices.CommentPost(postId, email, content);
-    createNotificationToPersonal(email, postId, 'comment');
+    // create notification moved inside CommentPost function.
     res.send(result);
 });
 // TODO: delete post comment
